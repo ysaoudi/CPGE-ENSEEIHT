@@ -1,0 +1,65 @@
+R0:     "Algorithme permettant d'afficher le plus grand et plus petit 
+        élément d'une liste d'entiers relatifs non nuls finissant par 0."
+TEST:   2 9 3 6 3 et 0 --> min=2; max=9 
+        0 --> "Série vide"
+        -2 4 -6 3 et 0 --> min=-6; max=4
+R1:     "Comment demander la série et comparer ses éléments jusqu'à ce 
+        que  0 soit saisi pour enfin afficher le min et le max."
+        Afficher "Série vide" si 0=premier élément saisi
+        Saisi d'entier de façon continue jusqu'à la saisie de 0           (répétition)
+        Arrêter la demande d'entiers une fois 0 est saisi
+        Retourner la valeur min et max de la série
+R2:     ECRIRE("Saisir les valeurs de la série (0 pour terminer) : ")
+        LIRE(Entier)
+        Si Entier = 0 alors
+            ECRIRE("Pas de valeurs dans la série")
+        Sinon
+            Min<--Entier
+            Max<--Entier
+            Lire(Entier)
+            TANT QUE Entier<>0 faire
+                Si Entier > Max alors
+                    Max <-- Entier
+                Si Entier < Entier alors
+                    Min <-- Entier
+                Sinon
+                    Rien
+                Fin Si
+                Lire(Entier)
+            FIN TANT QUE
+            ECRIRE("Min = ", Min)
+            ECRIRE("Max = ", Max)
+        FIN SI
+R3: "Compilation de l'algorithme"
+
+programme mix_max_serie EST
+    Entier: Entier --un entier lu au clavier
+    Min, Max: Entier --le plus petit et le plus grand élément de la série
+DEBUT
+    ECRIRE("Saisir les valeurs de la série (0 pour terminer) : ")
+    LIRE(Entier) --Saisir un premier entier relatif
+    Si Entier = 0 alors --Entier est nul et n'est donc pas dans la série
+        ECRIRE("Pas de valeurs dans la série")
+    Sinon --Entier est le premier élément de la série
+        Min<--Entier
+        Max<--Entier
+        --Initialisation de Min et Max avec le premier entier
+        Lire(Entier) --Traitement des autres valeurs de la série
+        TANT QUE Entier<>0 faire
+            --Mise à jour de Min et Max relativement aux entiers saisis
+            Si Entier > Max alors
+                Max <-- Entier
+            Si Entier < Entier alors
+                Min <-- Entier
+            Sinon
+                Rien
+            Fin Si
+            Lire(Entier) --Saisi d'un nouvel entier par l'utilisateur
+        FIN TANT QUE
+        ECRIRE("Min = ", Min)
+        ECRIRE("Max = ", Max)
+        --Affichage du min et max de la série
+    FIN SI
+FIN
+        
+        

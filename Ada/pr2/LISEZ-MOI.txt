@@ -1,0 +1,93 @@
+% Mini-projet  : Ensemble
+% NOM & Prénom : SAOUDI Younes
+% Groupe       : D
+
+
+**Consigne :** Dans ce fichier, il faut répondre à la place des "..." et sur
+les lignes qui les suivent.  Le texte déjà écrit doit être conservé !
+
+**Remarque :** Ce fichier utiliser la syntaxe Markdown.  On peut en engendrer
+une version pdf en faisant :
+
+	pandoc LISEZ-MOI.txt -o LISEZ-MOI.pdf
+
+
+# Temps passé sur le projet
+
+Ces informations de temps sont demandées à titre indicatif et ne sont pas
+prises en compte dans la notation du projet.
+
+Toutes les durées sont à saisir en heures.  Par exemple, si vous avez passé
+1h45, il faudra indiquer 1.75.  Si vous avez passé 2h30, il faudra indiquer
+2.5.
+
+* Temps passé sur la version Tableau    (en h) : 3.0
+* Temps passé sur la version Chainage   (en h) : 0.5
+* Temps passé à compléter LISEZ-MOI.txt (en h) : 1.0
+
+
+# Questions
+
+**Question 1 :**
+Quels sous-programmes avez-vous définis dans les corps des modules sans les
+spécifier dans la spécification ?  Expliquez pourquoi.
+
+**Réponse :**
+Appliquer_Sur_Tous car il fait partie de la généricité du module et sera instancié dans l'implémentation.
+
+
+**Question 2 :**
+Y a-t-il des sous-programmes dont les contrats (préconditions ou
+postconditions) changent entre Ensembles_Tableau et Ensembles_Chaine ?
+Lesquels ?
+
+**Réponse :**
+J'ai ajouté une post_condition à Détruire dans la version chaînage.
+
+
+**Question 3 :**
+Le type Ensemble doit être déclaré comme très privé dans Ensembles_Chaine.
+Expliquez pourquoi il est important ici de définir le type Ensemble comme
+très privé (et pas seulement privé).  On commecera par rappeler la
+différence entre "private" (privé) et "limited private" (très privé).
+
+**Réponse :**
+...
+
+
+**Question 4 :**
+Même pour Ensemble_Tableau, le type doit être très privé.  Pourquoi ?
+
+**Réponse :**
+Pour conserver la généricité du type et limiter l'utilisateur aux opérations prédéfinies dans le paquetage.
+
+
+**Question 5 :**
+Dans Ensemble_Tableau, est-il possible d'implanter le sous-programme qui
+supprime un élément en temps constant concernant le nombre d'affectations
+des éléments de l'ensemble (et linéaire sur le nombre de comparaison) ? Si
+oui, comment ?
+
+**Réponse :**
+Qu'est ce que la suppression en temps constant????
+
+
+**Question 6 :**
+Est-ce que les deux implantations envisagées des ensembles (Tableau ou
+Chainage) sont efficaces ?
+
+**Réponse :**
+Oui.
+
+
+
+# Difficultés
+
+Voici les difficultés rencontrées et les solutions apportées.
+
+Concept de la généricité abordé très rapidement pendant le cours. 
+
+
+# Remarques diverses
+
+...

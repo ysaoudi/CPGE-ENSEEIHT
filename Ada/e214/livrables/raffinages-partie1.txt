@@ -1,0 +1,334 @@
+R0: Menu principal qui permet à l'utilisateur de manipuler un arbre généalogique et son registre d'état civil.
+    Aucun test.
+R1
+    Debut
+        Ecrire("          Arbres Généalogiques et Registres d'Etat Civil          ");
+        Ecrire("Voulez-vous créer un arbre généalogique et son registre ? [y/n] : ");
+        Lire(Commencer);
+        si Commencer<>'n' et Commencer<>'N' alors
+            Ecrire("Commencez d'abord par saisir la valeur de la racine (nombre entier) : ");
+            Lire(Racine);
+            Initialiser l'AG et le RG par la clé Racine;
+            Répéter
+                Ecrire("         Menu Principal           ");
+                Ecrire("1. Vérifications");
+                Ecrire("2. Opérations");
+                Ecrire("3. Affichages");              
+                Ecrire("4. Quitter ?");
+                ecrire("Quelle option choisissez vous? : ");
+                Lire(Option);
+                
+                selon Option EST
+                    1 =>
+                        répéter
+                            Ecrire("         Menu des Vérifications          ");
+                            Ecrire("1. Vérifier si l'arbre et le registre sont vides");
+                            Ecrire("2. Vérifier si une clé existe dans l'arbre et son registre");
+                            Ecrire("3. Vérifier si deux individus ont un ou plusieurs ancêtres homonymes");
+                            Ecrire("4. Revenir au Menu Principal");
+                            ecrire("Quelle option choisissez vous? : ");
+                            Lire(Option1); 
+                            selon Option1 is
+                                 1 => 
+                                    si l'AG et le RG sont vides alors Ecrire("L'arbre et son registre sont vides."); 
+                                    sinon Rien; 
+                                    fin si;
+                                 2 =>
+                                    ecrire("Saisissez la clé que vous cherchez : "); Lire(New_Key);
+                                    si New_Key existe dans l'AG et le RG alors 
+                                        Ecrire("La clé existe dans l'arbre et le registre."); 
+                                    sinon Rien; 
+                                    fin si;
+                                 3 =>
+                                    Ecrire("Saisissez la clé du premier individu : "); Lire(New_Key1);
+                                    Ecrire("Saisissez la clé du deuxième individu : "); Lire(New_Key2);
+                                    Si New_Key1 et New_Key2 existent dans l'AG et le RG alors
+                                        S'ils ont un ou plusieurs ancêtres homonymes alors
+                                            Ecrire("Ces deux individus ont des ancêtres homonymes.");
+                                        Sinon
+                                            Ecrire("Ces individus n'ont pas d'ancêtres homonymes.");
+                                        fin si;
+                                    Sinon
+                                        Ecrire("Clé(s) introuvable(s)!");
+                                 4 =>
+                                    MenuPrecedent<-True;
+                                    Ecrire("Retour au menu précédent..."); 
+                                 autres =>
+                                    Ecrire("Saisissez une option valide."); 
+                            fin selon;
+                            
+                        jusqu'à MenuPrecedent;
+                        fin répéter;
+                        MenuPrecedent<-False;
+                     2 => 
+                        répéter
+                            Ecrire("         Menu des Opérations           ");
+                            Ecrire("1. Ajouter un ancêtre");
+                            Ecrire("2. Supprimer un ancêtre");
+                            Ecrire("3. Modifier la clé d'un ancêtre");              
+                            Ecrire("4. Modifier le sexe d'un ancêtre");
+                            Ecrire("5. Ajouter/Modifier toutes les informations d'un ancêtre");
+                            Ecrire("6. Ajouter/Modifier le nom complet d'un ancêtre");
+                            Ecrire("7. Ajouter/Modifier la date de naissance d'un ancêtre"); 
+                            Ecrire("8. Ajouter/Modifier le lieu de naissance d'un ancêtre");
+                            Ecrire("9. Revenir au Menu Principal");
+                            ecrire("Quelle option choisissez vous? : ");
+                            Lire(Option2);  
+                            selon Option2 is
+                                 1 => 
+                                    ecrire("Saisissez la clé du nouvel ancêtre : ");
+                                     Lire(New_Key);
+                                    ecrire("Saisissez la clé de son descendant : "); 
+                                    Lire(New_Key_Desc);
+                                    ecrire("Saisissez le lien de parenté [M/P]: "); 
+                                    Lire(New_Donnee);
+                                    Ajouter New_Key et sa donnée New_Donnee à l'AG et le RG;
+                                    ecrire("Vérification que l'ajout a été fait... ");
+                                    si New_Key existe dans l'AG et le RG alors 
+                                        ecrire("Ajout réussi.");
+                                        ecrire("Voulez-vous attribuer à la clé des informations ? [y/n] : "); Lire(AddInfo);
+                                        si AddInfo<>'n' et AddInfo<>'N' alors
+                                            ecrire("Saisissez le nom complet du nouvel ancêtre : ");Lire(New_Name);
+                                            Attribuer le nom New_Name à la clé New_Key dans le RG;
+                                            Ecrire("Saisissez sa date de naissance : ");
+                                            ecrire("      -Le jour : "); Lire(NewDay);
+                                            ecrire("      -Le mois : "); Lire(NewMonth_Integer);
+                                            ecrire("      -L'année : "); Lire(NewYear);
+                                            Attribuer la date de naissance à New_Key;
+                                            ecrire("Saisissez son lieu de naissance : ");Lire(NewBirthP);  
+                                            Attribuer le lieu de naissance à New_Key;;
+                                            Ecrire("Vous avez bien ajouté le nouvel ancêtre et ses informations à l'arbre et au registre.");
+                                        sinon
+                                            Ecrire("Retour au menu des opérations...");
+                                        fin si;
+                                    sinon
+                                        Ecrire("Ajout échoué!");
+                                    fin si;
+                                 2 =>
+                                    ecrire("Saisissez la clé de l'ancêtre que vous voulez supprimer : "); Lire(New_Key);
+                                    Supprimer New_Key et tous ces ancêtres de l'AG et le RG;
+                                    si New_Key n'existe pas dans l'AG et le RG alors
+                                        Ecrire("Suppression effectuée."); 
+                                    sinon
+                                        Ecrire("Suppression échouée!"); 
+                                    fin si;
+                                 3 =>
+                                    ecrire("Saisissez la clé de l'ancêtre dont vous voulez changer la clé : "); Lire(New_Key);
+                                    si New_Key existe dans l'AG et le RG alors
+                                        ecrire("Saissez la nouvelle clé : ");Lire(Newer_Key);
+                                        Modifier la clé New_Key par Newer_Key dans l'AG et le RG;
+                                        Ecrire("Modification effectuée.");
+                                    fin si;
+                                    
+                                 4 =>
+                                    ecrire("Saisissez la clé de l'ancêtre dont vous voulez changer le sexe : "); Lire(New_Key);
+                                    si New_Key existe dans l'AG et le RG alors
+                                        ecrire("Saisissez le nouveau sexe [M/P]: "); Lire(New_Donnee);
+                                        Modifier la donnée de New_Key par New_Donnee dans l'AG et le RG;
+                                        Ecrire("Modification effectuée.");
+                                    fin si;
+                                    
+                                 5 =>
+                                    ecrire("Saisissez la clé de l'ancêtre dont vous voulez attribuer des informations : "); Lire(New_Key);
+                                    si New_Key existe dans l'AG et le RG alors
+                                        ecrire("Saisissez le nom complet de l'ancêtre : ");Lire(New_Name);
+                                        Attribuer le nom à New_Key;
+                                        Ecrire("Saisissez sa date de naissance : ");
+                                        ecrire("      -Le jour : "); Lire(NewDay);
+                                        ecrire("      -Le mois : "); Lire(NewMonth_Integer);
+                                        ecrire("      -L'année : "); Lire(NewYear);
+                                        Attribuer la date de naissance à New_Key;
+                                        ecrire("Saisissez son lieu de naissance : ");Lire(NewBirthP);  
+                                        Attribuer le lieu de naissance à New_Key;;
+                                        Ecrire("Vous avez bien ajouté/modifié toutes les informations de l'ancêtre.");
+                                    fin si;
+                                    
+                                 6 => 
+                                    ecrire("Saisissez la clé de l'ancêtre auquel vous voulez attribuer un nom : "); Lire(New_Key);
+                                    si New_Key existe dans l'AG et le RG alors
+                                        ecrire("Saisissez le nom complet : "); Lire(New_Name);
+                                        Attribuer le nom à New_Key;
+                                        Ecrire("Ajout/Modification effectuée.");
+                                    fin si;
+                                    
+                                 7 =>
+                                    ecrire("Saisissez la clé de l'ancêtre auquel vous voulez attribuer une date de naissance : ");Lire(New_Key);
+                                    si New_Key existe dans l'AG et le RG alors
+                                        Ecrire("Saisissez sa date de naissance : ");
+                                        ecrire("      -Le jour : "); Lire(NewDay);
+                                        ecrire("      -Le mois (entier naturel): "); Lire(NewMonth_Integer);
+                                        ecrire("      -L'année : "); Lire(NewYear);
+                                        Attribuer la date de naissance à New_Key;
+                                    fin si;
+                                                                       
+                                 8 =>
+                                    ecrire("Saisissez la clé de l'ancêtre auquel vous voulez attribuer un lieu de naissance : ");Lire(New_Key);
+                                    si New_Key existe dans l'AG et le RG alors
+                                        ecrire("Saisissez sa date de naissance : "); Lire(NewBirthP);
+                                        Attribuer le lieu de naissance à New_Key;;
+                                        Ecrire("Ajout/Modification effectuée.");
+                                    fin si;
+                                    
+                                 9 =>
+                                    MenuPrecedent<-True;
+                                    Ecrire("Retour au menu précédent..."); 
+                                 autres =>
+                                    Ecrire("Saisissez une option valide."); 
+                            fin selon;
+                        jusqu'à MenuPrecedent;
+                        fin répéter;
+                        MenuPrecedent<-False;     
+                     3 =>
+                        répéter
+                            Ecrire("         Menu des Affichages           ");
+                            Ecrire(" 1. Afficher toutes les informations d'une clé");
+                            Ecrire(" 2. Afficher le nom complet d'une clé");
+                            Ecrire(" 3. Afficher la date de naissance d'une clé");
+                            Ecrire(" 4. Afficher le lieu de naissance d'une clé"); 
+                            Ecrire(" 5. Afficher les clés et noms des parents d'une clé");             
+                            Ecrire(" 6. Afficher le nombre d'ancêtres d'une clé");
+                            Ecrire(" 7. Afficher les clés d'une certaine génération par rapport à une clé");
+                            Ecrire(" 8. Afficher les clés d'une certaine génération ou moins par rapport à une clé"); 
+                            Ecrire(" 9. Afficher les clés n'ayant aucun parent connu");
+                            Ecrire("10. Afficher les clés ayant un seul parent connu");
+                            Ecrire("11. Afficher les clés ayant les deux parents connus");
+                            Ecrire("12. Afficher l'arbre complet");
+                            Ecrire("13. Afficher l'arbre à partir d'une clé");
+                            Ecrire("14. Revenir au Menu Principal");
+                            ecrire("Quelle option choisissez vous? : ");
+                            Lire(Option3); 
+                            selon Option3 is
+                                 1=>
+                                    ecrire("Saisissez la clé de l'ancêtre dont vous voulez afficher toutes les informations : "); Lire(New_Key);
+                                    si New_Key existe dans l'AG et le RG alors
+                                        ecrire("Le nom complet de la clé ",New_Key," est       : ");
+                                        ecrire le nom complet de New_Key;
+                                        ecrire(".");
+                                        ecrire("La date de naissance de la clé ",New_Key," est : ");
+                                        Afficher la date de naissance de New_Key;
+                                        ecrire(".");
+                                        
+                                        ecrire("Le lieu de naissance de la clé ",New_Key," est : ");
+                                        ecrire le lieu de naissance de New_Key;
+                                        ecrire(".");
+                                        si le fils gauche de New_Key est nul et le fils droit de New_Key est nul alors
+                                            Ecrire("Cette clé n'a pas de parent connu!");
+                                        sinon si le fils gauche de New_Key n'est pas nul alors
+                                            si il s'agit de la mère alors
+                                                ecrire("Sa mère a pour clé ", Cle de la mère, " et s'appelle    : ", Nom de la mère);
+                                                 
+                                            sinon si il s'agit du père alors
+                                                ecrire("Son père a pour clé " ,Clé du père, " et s'appelle    : ", Nom du père);                                            
+                                            fin si;
+                                        fin si;
+                                        si le fils droit de New_Key n'est pas nul alors
+                                             si il s'agit de la mère alors
+                                                ecrire("Sa mère a pour clé " ,Clé de la mère, " et s'appelle    : ", Nom de la mère);
+                                            sinon si il s'agit du père alors
+                                                ecrire("Son père a pour clé " ,Clé du père, " et s'appelle    : ",Nom du père);
+                                                 
+                                            fin si;
+                                        fin si;
+                                    fin si;
+                                                                        
+                                 2 =>
+                                     ecrire("Saisissez la clé de l'ancêtre dont vous voulez afficher le nom complet : "); Lire(New_Key);
+                                     si New_Key existe dans l'AG et le RG alors
+                                         ecrire("Le nom complet de la clé ",New_Key," est : ");
+                                         ecrire le nom de New_Key;ecrire(".");
+                                     fin si;
+                                     
+                                 3 =>
+                                    ecrire("Saisissez la clé de l'ancêtre dont vous voulez afficher la date de naissance : "); Lire(New_Key);
+                                     si New_Key existe dans l'AG et le RG alors
+                                         ecrire("La date de naissance de la clé ",New_Key," est : ");
+                                         afficher la date de naissance de New_Key;
+                                         ecrire(".");
+                                     fin si;
+                                     
+                                 4 =>
+                                    ecrire("Saisissez la clé de l'ancêtre dont vous voulez afficher le lieu de naissance : "); Lire(New_Key);
+                                     si New_Key existe dans l'AG et le RG alors
+                                         ecrire("Le lieu de naissance de la clé ",New_Key," est : "); 
+                                         afficher le lieu de naissance de New_Key;;ecrire(".");
+                                     fin si;
+                                     
+                                 5 =>
+                                    ecrire("Saisissez la clé de l'ancêtre dont vous voulez afficher les informations des parents : "); Lire(New_Key);
+                                    si New_Key existe dans l'AG et le RG alors
+                                        si le fils gauche de New_Key est nul et le fils droit de New_Key est nul alors
+                                            Ecrire("Cette clé n'a pas de parent connu!");
+                                        sinon si le fils gauche de New_Key n'est pas nul alors
+                                            si il s'agit de la mère alors
+                                                ecrire("Sa mère a pour clé " ,Clé de la mère, " et s'appelle    : ", nom de la mère);
+                                                 
+                                            sinon si il s'agit du père alors
+                                                ecrire("Son père a pour clé " ,Clé du père, " et s'appelle    : ", nom du père);
+                                               
+                                            fin si;
+                                        fin si;
+                                        si le fils droit de New_Key n'est pas nul alors
+                                             si il s'agit de la mère alors
+                                                ecrire("Sa mère a pour clé " ,Clé de la mère, " et s'appelle    : ", nom de la mère);
+                                                 
+                                            sinon si il s'agit du père alors
+                                                ecrire("Son père a pour clé " ,Clé du père, " et s'appelle    : ", nom du p_re);
+                                                 
+                                            fin si;
+                                        fin si;
+                                    fin si;
+                                    
+                                 6 =>
+                                    ecrire("Saisissez la clé de l'ancêtre dont vous voulez afficher le nombre d'ancêtres : "); Lire(New_Key);
+                                     si New_Key existe dans l'AG et le RG alors
+                                         ecrire("Le nombre d'ancêtres de la clé ",New_Key," est : ", nombre d'ancêtres de New_Key, ".");
+                                     fin si;
+                                     
+                                 7 => 
+                                    ecrire("Saisissez la clé de l'ancêtre dont vous voulez afficher les ancêtres d'une certaine génération : "); Lire(New_Key);
+                                    ecrire("Saisissez la génération : ");Lire(g);
+                                    si New_Key existe dans l'AG et le RG alors
+                                         Afficher les ancêtre de génération g par rapport à New_Key;
+                                    fin si;
+                                    
+                                 8 =>
+                                    ecrire("Saisissez la clé de l'ancêtre dont vous voulez afficher les ancêtres d'une certaine génération ou moins: "); Lire(New_Key);
+                                    ecrire("Saisissez la génération : ");Lire(g);
+                                    si New_Key existe dans l'AG et le RG alors
+                                         Afficher les ancêtres de génération g ou moins par rapport à New_Key;
+                                    fin si;
+                                    
+                                 9 =>  Afficher les clés n'ayant aucun parent connu.
+                                 10 => Afficher les clés ayant un seul parent connu.
+                                 11 => Afficher les clés ayant les deux parents connus.
+                                 12 =>
+                                    Ecrire("Affichage de l'arbre complet :");
+                                    Afficher AG;
+                                 13 =>
+                                    ecrire("Saisissez la clé de l'ancêtre à partir duquel vous voulez afficher l'arbre: "); Lire(New_Key);
+                                    si New_Key existe dans l'AG et le RG alors
+                                        Afficher AG à partir de New_Key;
+                                    fin si;
+                                    
+                                 14 =>
+                                    MenuPrecedent<-True;  
+                                    Ecrire("Retour au menu précédent...");                               
+                                 autres =>
+                                    Ecrire("Saisissez une option valide."); 
+                            fin selon;
+                        jusqu'à MenuPrecedent;
+                        fin répéter;
+                        MenuPrecedent<-False;
+                     4 =>
+                        Quitter<-True;
+                     autres =>
+                        Ecrire("Saisissez une option valide."); 
+                fin selon;
+            jusqu'à Quitter;
+            fin répéter;
+        sinon
+            Rien;
+        fin si;
+        
+        Ecrire("Vous avez quitté le programme.");
+    FIN;
