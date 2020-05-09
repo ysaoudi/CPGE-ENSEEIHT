@@ -23,7 +23,19 @@ void suivi_pere (int sig) {
     if (executionFG && sig == SIGTSTP){
         //executionFG = false;
         printf(" Suspension du processus\n");
-        kill(pidCHILDFG, SIGSTOP);
+        int fils = fork(); //Le père attend qu'un fils quelconque finisse, on va donc en créer un pour le terminer immédiatement (sinon le père attendre pidCHILDFG alors qu'il sera suspendu)
+        if (fils == 0){ //Nouveau Fils
+            exit(EXIT_SUCCESS);
+        }
+        else if (fils > 0){ //Père
+            kill(fils, SIGKILL);
+            kill(pidCHILDFG, SIGSTOP);
+        } else {
+            /* échec du fork */
+            printf("Erreur fork\n");
+            /* Convention : s'arrêter avec une valeur > 0 en cas d'erreur */
+            exit(1);
+        }
     } 
     //Si l'execution se fait en FG et que CTRL C est tapé
     else if (executionFG && sig == SIGINT){
@@ -174,14 +186,12 @@ int main()
                 if (pExists(processList, PID)){
         
                     //reprendre le processus mais en avant plan
-                    int etat_fils;
-                    waitpid(PID, &etat_fils, WNOHANG | WUNTRACED | WCONTINUED);
-                    if ( WIFSTOPPED(etat_fils) || WIFSIGNALED(etat_fils)) {
-                        kill(PID, SIGCONT);
-                        waitpid(PID, 0, 0);
-                    	updateCommand(&processList, PID, Done);
-                    }
-                    
+                    //waitpid(PID, &etat_fils, WNOHANG | WUNTRACED | WCONTINUED);
+                    //if ( WIFSTOPPED(etat_fils) || WIFSIGNALED(etat_fils)) {
+                    kill(PID, SIGCONT);
+                    waitpid(PID, 0, 0);
+                    updateCommand(&processList, PID, Done);
+                    //}
                     continue;
                 } else {
                     printf("Ce processus n'existe pas!\n");
