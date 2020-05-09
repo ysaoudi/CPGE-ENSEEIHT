@@ -1,3 +1,4 @@
 gcc -Wall readcmd.c myJobs.c main.c -o test
 gcc -Wall readcmd.c test.c -o testjobs
 c99 -Wextra -pedantic -c myJobs.c
+lol
