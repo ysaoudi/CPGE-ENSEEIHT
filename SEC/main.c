@@ -4,9 +4,9 @@
 #include <signal.h> /* traitement des signaux */
 #include "readcmd.h"
 #include <sys/wait.h> /* wait */
-#include <string.h> /* opérations sur les chaînes */
-#include <errno.h> 
-#include <fcntl.h> /* opérations sur les fichiers */
+#include <string.h>   /* opérations sur les chaînes */
+#include <errno.h>
+#include <fcntl.h>  /* opérations sur les fichiers */
 #include "myJobs.h" //Contient tout ce qui est relatif au stockage des processus, leur informations ainsi que leur affichage
 
 /**
@@ -130,8 +130,8 @@ int main()
 
     initializeList(&processList);
     signal(SIGCHLD, suivi_fils);
-    //int pipe_cmd[2];
     int desc_ent, desc_res, dupdesc; /* descripteurs de fichiers */
+    //int pipe_cmd[2];
     /*retour = pipe(pipe_cmd);
     //traiter systématiquement le retour des appels système */
     /*if (retour == -1)
@@ -274,48 +274,115 @@ int main()
         /* fils */
         if (retour == 0)
         {
-            signal(SIGTSTP, SIG_IGN); //Ignorer CTRL Z
-            signal(SIGINT, SIG_IGN);  //Ignorer CTRL C
+            signal(SIGTSTP, SIG_IGN);    //Ignorer CTRL Z
+            signal(SIGINT, SIG_IGN);     //Ignorer CTRL C
             signal(SIGCHLD, suivi_fils); //Attribuer la handler suivi_fils au signal SIGCHLD
 
-            if (cmd->in != NULL) //S'il y a redirection de stdin vers un fichier
+            //S'il y a redirection de stdin ou stdout
+            if (cmd->in != NULL || cmd->out != NULL)
             {
-                /*ouvrir le fichier des entrées */
-                desc_ent = open(cmd->in, O_RDONLY);
-                /* traiter systématiquement les retours d'erreur des appels */
-                if (desc_ent < 0)
+                if (cmd->in != NULL && cmd->err == NULL) //S'il y a redirection de stdin vers un fichier
                 {
-                    fprintf(stderr, "Erreur ouverture %s\n", cmd->in);
-                    exit(1);
+                    /*ouvrir le fichier des entrées */
+                    desc_ent = open(cmd->in, O_RDONLY);
+                    /* traiter systématiquement les retours d'erreur des appels */
+                    if (desc_ent < 0)
+                    {
+                        fprintf(stderr, "Erreur ouverture %s\n", cmd->in);
+                        exit(1);
+                    }
+                    dupdesc = dup2(desc_ent, 0);
+                    if (dupdesc == -1)
+                    {
+                        /* échec du dup2 */
+                        perror("Erreur dup2\n");
+                        exit(5);
+                    }
                 }
-                dupdesc = dup2(desc_ent, 0);
-                if (dupdesc == -1)
+                if (cmd->out != NULL && cmd->err == NULL) //S'il y a rediréction de stdout vers un fichier
                 {
-                    /* échec du dup2 */
-                    perror("Erreur dup2\n");
-                    exit(5);
+
+                    /* ouvrir le fichier résultats */
+                    desc_res = open(cmd->out, O_WRONLY | O_CREAT | O_TRUNC, 0640);
+                    /* traiter systématiquement les retours d'erreur des appels */
+                    if (desc_res < 0)
+                    {
+                        fprintf(stderr, "Erreur ouverture %s\n", cmd->out);
+                        exit(2);
+                    }
+                    dupdesc = dup2(desc_res, 1);
+                    if (dupdesc == -1)
+                    {
+                        /* échec du dup2 */
+                        perror("Erreur dup2\n");
+                        exit(5);
+                    }
                 }
             }
-            if (cmd->out != NULL) //S'il y a rediréction de stdout vers un fichier 
+            //S'il y a un pipe
+            if (cmd->seq[1] != NULL)
             {
-                
-                /* ouvrir le fichier résultats */
-                desc_res = open(cmd->out, O_WRONLY | O_CREAT | O_TRUNC, 0640);
-                /* traiter systématiquement les retours d'erreur des appels */
-                if (desc_res < 0)
+                printf("u fucked up\n");
+                int pipe_cmd[2];
+                int retour_pipe = pipe(pipe_cmd);
+                //traiter systématiquement le retour des appels système */
+                if (retour_pipe == -1)
                 {
-                    fprintf(stderr, "Erreur ouverture %s\n", cmd->out);
-                    exit(2);
+                    // échec du pipe
+                    perror("Erreur pipe\n");
+                    exit(1);
                 }
-                dupdesc = dup2(desc_res, 1);
-                if (dupdesc == -1)
+                int petit_fils = fork();
+                if (petit_fils == -1)
                 {
-                    /* échec du dup2 */
-                    perror("Erreur dup2\n");
-                    exit(5);
+                    perror("Erreut fork\n");
+                }
+                else if (petit_fils == 0)
+                {
+                    close(pipe_cmd[0]);
+                    //petit fils
+                    dupdesc = dup2(pipe_cmd[1], 1);
+                    if (dupdesc == -1)
+                    {
+                        /* échec du dup2 */
+                        perror("Erreur dup3\n");
+                        exit(5);
+                    }
+                    close(pipe_cmd[1]);
+                    if(execvp(cmd->seq[0][0], cmd->seq[0]) < 0)
+                    {
+                        printf("%s: Unknown Command!\n", cmd->seq[0][0]);
+                        exit(EXIT_FAILURE);
+                    }
+                    else
+                    {
+                        exit(EXIT_SUCCESS);
+                    }
+                }
+                else
+                {
+                    //fils (père du petit fils)
+                    dupdesc = dup2(pipe_cmd[0], 0);
+                    if (dupdesc == -1)
+                    {
+                        /* échec du dup2 */
+                        perror("Erreur dup3\n");
+                        exit(5);
+                    }
+                    close(pipe_cmd[1]);
+                    if (execvp(cmd->seq[1][0], cmd->seq[1]) < 0)
+                    {
+                        printf("%s: Unknown Command!\n", cmd->seq[1][0]);
+                        exit(EXIT_FAILURE);
+                    }
+                    else
+                    {
+                        exit(EXIT_SUCCESS);
+                    }
                 }
             }
 
+            //Execution de la commande (n'arrive jamais ici dans le cas d'un pipe)
             if (execvp(cmd->seq[0][0], cmd->seq[0]) < 0)
             {
                 printf("%s: Unknown Command!\n", cmd->seq[0][0]);
