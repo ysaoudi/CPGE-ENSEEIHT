@@ -34,7 +34,7 @@ void suivi_pere(int sig)
         else if (fils > 0)
         { //Père
             kill(fils, SIGKILL);
-            kill(pidCHILDFG, SIGSTOP);
+            kill(pidCHILDFG, SIGSTOP); //Suspension du processus
         }
         else
         {
@@ -52,7 +52,7 @@ void suivi_pere(int sig)
         kill(pidCHILDFG, SIGKILL);
         if (pExists(processList, pidCHILDFG))
         {
-            popCommand(&processList, pidCHILDFG);
+            popCommand(&processList, pidCHILDFG); //Suppression de processus
         }
     }
     //Si l'execution ne se fait pas en FG et que CTRL C est tapé
@@ -82,10 +82,6 @@ void suivi_fils(int sig)
         else if (pid_fils > 0)
         {
 
-            //if (WIFSTOPPED(etat_fils)) {
-            /* traiter la suspension */
-            //updateCommand(&processList, pid_fils, Interrupted);
-
             if (WIFCONTINUED(etat_fils))
             {
                 /* traiter la reprise */
@@ -104,6 +100,7 @@ void suivi_fils(int sig)
             }
             else if (WIFEXITED(etat_fils))
             {
+                /* traiter l'arrêt normal */
                 if (pExists(processList, pid_fils))
                 {
                     updateCommand(&processList, pid_fils, Done);
@@ -117,29 +114,17 @@ void suivi_fils(int sig)
 }
 int main()
 {
-    char s[200];
+    char s[200]; // répertoire courrant
     int retour;
-    struct cmdline *cmd;
-    signal(SIGTSTP, suivi_pere);
-    signal(SIGINT, suivi_pere);
-    /* 
-    sigset_t signaux;
-    sigemptyset(&signaux);
-    sigaddset(&signaux, 20); 
-    */
+    struct cmdline *cmd; //ligne de commande
 
-    initializeList(&processList);
-    signal(SIGCHLD, suivi_fils);
+    signal(SIGTSTP, suivi_pere); //handler CTRL Z
+    signal(SIGINT, suivi_pere); // handle CTRL C
+
+    initializeList(&processList); //initialisation de la liste de processus
+    signal(SIGCHLD, suivi_fils); //handler SIGCHLD
     int desc_ent, desc_res, dupdesc; /* descripteurs de fichiers */
-    //int pipe_cmd[2];
-    /*retour = pipe(pipe_cmd);
-    //traiter systématiquement le retour des appels système */
-    /*if (retour == -1)
-    {
-        // échec du pipe
-        perror("Erreur pipe\n");
-        exit(1);
-    }*/
+    
 
     while (1)
     {
@@ -158,7 +143,7 @@ int main()
         //MODIFICATION QUESTION 4 ET 6
         if (strcmp(cmd->seq[0][0], "cd") == 0)
         {
-            chdir(cmd->seq[0][1]);
+            chdir(cmd->seq[0][1]); //changer de répertoire
             continue;
         }
         else if (strcmp(cmd->seq[0][0], "exit") == 0)
@@ -167,7 +152,7 @@ int main()
         }
         else if (strcmp(cmd->seq[0][0], "list") == 0)
         {
-            jobs(&processList);
+            jobs(&processList); //afficher la liste de processus
             continue;
         }
         else if (strcmp(cmd->seq[0][0], "stop") == 0)
@@ -182,7 +167,7 @@ int main()
                 char *strPID = malloc(sizeof(cmd->seq[0][1]));
                 strcpy(strPID, cmd->seq[0][1]);
                 int PID;
-                sscanf(strPID, "%d", &PID);
+                sscanf(strPID, "%d", &PID); //récuper le PID integer
 
                 if (pExists(processList, PID))
                 {
@@ -291,6 +276,7 @@ int main()
                         fprintf(stderr, "Erreur ouverture %s\n", cmd->in);
                         exit(1);
                     }
+                    //rediriger stdin vers le fichier de desc_ent
                     dupdesc = dup2(desc_ent, 0);
                     if (dupdesc == -1)
                     {
@@ -310,6 +296,7 @@ int main()
                         fprintf(stderr, "Erreur ouverture %s\n", cmd->out);
                         exit(2);
                     }
+                    //rediriger stdout vers le fichier de desc_res
                     dupdesc = dup2(desc_res, 1);
                     if (dupdesc == -1)
                     {
@@ -319,69 +306,106 @@ int main()
                     }
                 }
             }
-            //S'il y a un pipe
+
+            //S'il y a au moins un pipe
             if (cmd->seq[1] != NULL)
             {
-                printf("u fucked up\n");
-                int pipe_cmd[2];
-                int retour_pipe = pipe(pipe_cmd);
-                //traiter systématiquement le retour des appels système */
-                if (retour_pipe == -1)
-                {
-                    // échec du pipe
-                    perror("Erreur pipe\n");
-                    exit(1);
-                }
-                int petit_fils = fork();
-                if (petit_fils == -1)
-                {
-                    perror("Erreut fork\n");
-                }
-                else if (petit_fils == 0)
-                {
-                    close(pipe_cmd[0]);
-                    //petit fils
-                    dupdesc = dup2(pipe_cmd[1], 1);
-                    if (dupdesc == -1)
-                    {
-                        /* échec du dup2 */
-                        perror("Erreur dup3\n");
-                        exit(5);
-                    }
-                    close(pipe_cmd[1]);
-                    if(execvp(cmd->seq[0][0], cmd->seq[0]) < 0)
-                    {
-                        printf("%s: Unknown Command!\n", cmd->seq[0][0]);
-                        exit(EXIT_FAILURE);
-                    }
-                    else
-                    {
-                        exit(EXIT_SUCCESS);
-                    }
-                }
-                else
-                {
-                    //fils (père du petit fils)
-                    dupdesc = dup2(pipe_cmd[0], 0);
-                    if (dupdesc == -1)
-                    {
-                        /* échec du dup2 */
-                        perror("Erreur dup3\n");
-                        exit(5);
-                    }
-                    close(pipe_cmd[1]);
-                    if (execvp(cmd->seq[1][0], cmd->seq[1]) < 0)
-                    {
-                        printf("%s: Unknown Command!\n", cmd->seq[1][0]);
-                        exit(EXIT_FAILURE);
-                    }
-                    else
-                    {
-                        exit(EXIT_SUCCESS);
-                    }
-                }
-            }
 
+                int nbr_pipes = 0; //nombre de pipes
+
+                while (cmd->seq[nbr_pipes + 1] != NULL)
+                {
+                    nbr_pipes++;
+                }
+
+                int pipes[nbr_pipes*2]; //pipes
+
+                for (int j = 0; j < nbr_pipes; j++)
+                {
+                    int retour_pipe = pipe(pipes + j*2); //création de pipes
+                    if (retour_pipe == -1)
+                    {
+                        perror("Erreur pipe\n");
+                        exit(1);
+                    }
+                }
+                int i = 0;
+                int cmd_nbr = 0; //numéro de la commande à éxecuter
+
+                while(cmd_nbr < nbr_pipes +1)
+                {
+                    int fils = fork();
+                    if (fils == -1)
+                    {
+                        //erreur fork
+                        perror("Erreur fork\n");
+                        exit(1);
+                    }
+                    else if (fils == 0)
+                    {
+                        //fils
+                        if (cmd_nbr > 0) //si ce n'est pas la première commande
+                        {
+                            //rediriger stdin vers le résultat de la commande précédente
+                            dupdesc = dup2(pipes[i - 2], 0);
+                            if (dupdesc == -1)
+                            {
+                                perror("Erreur dup2 Lecture");
+                                fprintf(stderr, "iteration %d\n", cmd_nbr);
+                                exit(1);
+                            }
+                        }
+
+                        if (cmd_nbr != nbr_pipes) //si ce n'est pas la dernière commande
+                        {
+                            //rediriger stdout vers l'entrée de la commande suivante
+                            dupdesc = dup2(pipes[i +1], 1);
+                            if (dupdesc == -1)
+                            {
+                                perror("Erreur dup2 Ecriture");
+                                fprintf(stderr, "iteration %d\n", cmd_nbr);
+                                exit(1);
+                            }
+                        }
+
+                        //fermer les pipes inutiles
+                        for (int k = 0; k < 2*nbr_pipes; k++)
+                        {
+                            close(pipes[k]);
+                        }
+
+                        //execution de la commande actuelle
+                        if (execvp(cmd->seq[cmd_nbr][0], cmd->seq[cmd_nbr]) < 0)
+                        {
+                            printf("%s: Unknown Command!\n", cmd->seq[cmd_nbr][0]);
+                            exit(EXIT_FAILURE);
+                        }
+                        else
+                        {
+                            exit(EXIT_SUCCESS);
+                        }
+                    }
+                    else
+                    {
+                        //père
+                        cmd_nbr++; //pour exécuter la commande suivante
+                        i+=2; //pour lire et écrire dans les bons pipes
+                    }
+                }
+                //fermer les pipes puisque la commande a été exécutée correctement
+                for (int k = 0; k < 2*nbr_pipes; k++)
+                {
+                    close(pipes[k]);
+                }
+
+                //attendre que tous les fils finissent
+                int status;
+                for(i = 0; i < nbr_pipes + 1; i++)
+                {
+                    wait(&status);
+                }
+                exit(EXIT_SUCCESS); //revenir au minishell!
+            }
             //Execution de la commande (n'arrive jamais ici dans le cas d'un pipe)
             if (execvp(cmd->seq[0][0], cmd->seq[0]) < 0)
             {
@@ -390,7 +414,7 @@ int main()
             }
             else
             {
-                exit(EXIT_SUCCESS);
+                exit(EXIT_SUCCESS);  /* Terminaison normale (0 = sans erreur) */
             }
             //execvp(cmd->seq[0][0], cmd->seq[0]); //Executer la commande
             //exit(EXIT_SUCCESS);                  /* Terminaison normale (0 = sans erreur) */
@@ -399,7 +423,6 @@ int main()
         /* pere */
         else
         {
-            //MODIFICATION QUESTION 5
             if (cmd->backgrounded == NULL)
             {
                 executionFG = true;
@@ -418,7 +441,6 @@ int main()
                 strcpy(newCommand, cmd->seq[0][0]);
                 addCommand(&processList, retour, newCommand); //Ajout de la commande à liste de processus
             }
-            //FIN QUESTION 5
         }
     }
     return EXIT_SUCCESS;
