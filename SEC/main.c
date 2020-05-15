@@ -2,10 +2,10 @@
 #include <unistd.h> /* pimitives de base : fork, ...*/
 #include <stdlib.h> /* exit */
 #include <signal.h> /* traitement des signaux */
-#include "readcmd.h"
+#include "readcmd.h" /* lecture des commandes */
 #include <sys/wait.h> /* wait */
 #include <string.h>   /* opérations sur les chaînes */
-#include <errno.h>
+#include <errno.h>   /* errno */
 #include <fcntl.h>  /* opérations sur les fichiers */
 #include "myJobs.h" //Contient tout ce qui est relatif au stockage des processus, leur informations ainsi que leur affichage
 
@@ -15,7 +15,7 @@
  **/
 
 pList processList; //La liste des eventuels processus
-bool executionFG;  //Verifier si l'execution se fait en FG
+bool executionFG;  //Verifier si l'execution se fait en ForeGround FG
 int pidCHILDFG;    //le PID du fils executant en FG
 char *commandFG;   //Commande exécutée en FG
 
@@ -62,6 +62,10 @@ void suivi_pere(int sig)
     }
 }
 
+
+/**
+* handler de SIGCHLD, copié du tutoriel de Mr. Hamrouni
+*/
 void suivi_fils(int sig)
 {
 
@@ -112,6 +116,7 @@ void suivi_fils(int sig)
 
     /* autres actions après le suivi des changements d'état */
 }
+
 int main()
 {
     char s[200]; // répertoire courrant
