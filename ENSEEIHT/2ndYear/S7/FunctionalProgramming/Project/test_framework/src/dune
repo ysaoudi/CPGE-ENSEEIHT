@@ -1,0 +1,7 @@
+(library
+ (name src)
+ (libraries delimcc unix graphics)
+ (inline_tests)
+ (modules main tests)
+ (preprocess
+  (pps ppx_inline_test)))
