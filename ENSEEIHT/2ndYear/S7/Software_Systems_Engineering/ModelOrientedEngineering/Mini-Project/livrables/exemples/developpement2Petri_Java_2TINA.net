@@ -1,0 +1,30 @@
+net developpement
+	pl Conception_notStarted (1)
+	pl Conception_started (0)
+	pl Conception_inProgress (0)
+	pl Conception_finished (0)
+	pl RedactionDoc_notStarted (1)
+	pl RedactionDoc_started (0)
+	pl RedactionDoc_inProgress (0)
+	pl RedactionDoc_finished (0)
+	pl Programmation_notStarted (1)
+	pl Programmation_started (0)
+	pl Programmation_inProgress (0)
+	pl Programmation_finished (0)
+	pl RedactionTests_notStarted (1)
+	pl RedactionTests_started (0)
+	pl RedactionTests_inProgress (0)
+	pl RedactionTests_finished (0)
+	pl concepteur_resource (3)
+	pl developpeur_resource (2)
+	pl machine_resource (4)
+	pl redacteur_resource (1)
+	pl testeur_resource (2)
+	tr Conception_start 		Conception_notStarted	concepteur_resource*2	machine_resource*2 -> 		Conception_started	Conception_inProgress
+	tr Conception_finish 		Conception_inProgress	concepteur_resource*2	machine_resource*2 -> 		Conception_finished
+	tr RedactionDoc_start 		RedactionDoc_notStarted	Conception_started?1	machine_resource	redacteur_resource -> 		RedactionDoc_started	RedactionDoc_inProgress
+	tr RedactionDoc_finish 		RedactionDoc_inProgress	Conception_finished?1	machine_resource	redacteur_resource -> 		RedactionDoc_finished
+	tr Programmation_start 		Programmation_notStarted	Conception_finished?1	developpeur_resource*2	machine_resource*3 -> 		Programmation_started	Programmation_inProgress
+	tr Programmation_finish 		Programmation_inProgress	developpeur_resource*2	machine_resource*3 -> 		Programmation_finished
+	tr RedactionTests_start 		RedactionTests_notStarted	Conception_started?1	machine_resource*2	testeur_resource -> 		RedactionTests_started	RedactionTests_inProgress
+	tr RedactionTests_finish 		RedactionTests_inProgress	Programmation_finished?1	machine_resource*2	testeur_resource -> 		RedactionTests_finished

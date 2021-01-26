@@ -1,0 +1,242 @@
+[comment encoding = UTF-8 /]
+[module toJAVA('http://www.n7.fr/idm/projet/GAME')]
+[template public toJAVA( game : Game )]
+[comment @main/]
+[file (game.name.concat('.java'), false, 'UTF-8')]
+
+package test;
+import Game_Controller.*;
+import Display.Display;
+import Display.DisplayImpl;
+import My_game.*;
+import My_game.Object;
+
+public class [game.name.toUpperFirst()/] {
+public static void main(String['[]'/] args) {
+		/**
+		 * Init all elements
+		 */
+		[game.initGame()/]
+		[game.getGameElements() -> initGameElements()/]
+        [game.getActions() -> initActions()/]
+        [game.getChoices() -> initChoices()/]
+        [game.initExplorateur()/]
+		[game.fillConditions()/]
+		[game.FillElements()/]
+	
+		/**
+		 * Launch the game
+		 */
+        Display display = new DisplayImpl();
+		Controller controleur = new ControllerImpl(display, [game.name.toLowerFirst()/]);
+		controleur.play();
+	}
+}
+[/file]
+[/template]
+
+
+[template private initGame(game : Game)]
+[game.eClass().name/] [game.name.toLowerFirst()/] = new [game.eClass().name/]("[game.name.toLowerFirst()/]");
+[/template]
+
+[template private initGameElements(gameElements : OrderedSet(GameElement))]
+[for (ge : GameElement | gameElements) ]
+[ge.eClass().name/] [ge.name.toLowerFirst()/] = new [ge.eClass().name/]("[ge.name/]");
+[/for]
+[/template]
+
+[template private initActions(actions : OrderedSet(Action))]
+[for (a : Action | actions)]
+[a.eClass().name/] [a.name.toLowerFirst()/] = new [a.eClass().name/]("[a.name.toLowerFirst()/]");
+[/for]
+[/template]
+
+[template private initChoices(choices : OrderedSet(Choice))]
+[for (c : Choice | choices)]
+[c.eClass().name/] [c.name.toLowerFirst()/] = new [c.eClass().name/]("[c.name.toLowerFirst()/]");
+[/for]
+[/template]
+
+[template private initExplorateur(game : Game)]
+[let e : Explorer = game.explorer]
+[e.eClass().name/] [e.name.toLowerFirst()/] = new [e.eClass().name/]("[e.name/]");
+[/let]
+[/template]
+[template private fillConditions(game : Game)]
+[for (c : Condition | game.getConditions())]
+[let fc : SubConditions = c.firstCondition]
+[if  not fc.oclIsUndefined()]
+[fc.eClass().name/] subcondition[fc.comparator/][fc.compared/][c.name/][fc.gameElement.name/] = new [fc.eClass().name/]([fc.gameElement.name.toLowerFirst()/], [fc.compared/], Comparator.[fc.comparator/]);
+[c.name/].addSubCond(subcondition[fc.comparator/][fc.compared/][c.name/][fc.gameElement.name/]);
+[/if]
+[/let]
+
+[for ( nc : NextCondition | c.nextConditions)]
+[if not nc.oclIsUndefined()]
+[let sc : SubConditions = nc.subCondition]
+[sc.eClass().name/] subcondition[sc.comparator/][sc.compared/][c.name/][sc.gameElement.name/] = new [sc.eClass().name/]([sc.gameElement.name.toLowerFirst()/], [sc.compared/],  Comparator.[sc.comparator/]);
+[c.name.toLowerFirst()/].addSubCond(subcondition[sc.comparator/][sc.compared/][c.name/][sc.gameElement.name/]);
+[c.name.toLowerFirst()/].addLogicalOp(LogicalOperator.[nc.logicalOperator/]);
+[/let]
+[/if]
+[/for]
+[c.name.toLowerFirst()/].setExplorer([game.explorer.name.toLowerFirst()/]);
+[/for]
+[/template]
+
+
+
+[template private fillObjects(objects : OrderedSet(Object))]
+[for( o : Object | objects)]
+[o.name.toLowerFirst()/].setCount([o.quantity/]);
+[o.name.toLowerFirst()/].setSize([o.size/]);
+[/for]
+[/template]
+
+
+[template private fillKnowledge(knowledge : OrderedSet(Knowledge))]
+[for( n : Knowledge | knowledge)]
+[n.name.toLowerFirst()/].setCount(1);
+[/for]
+[/template]
+
+
+[template private fillExplorateur(explorer : Explorer, game : Game)]
+[explorer.name.toLowerFirst()/].setCurrentPlace([game.startingPlace.name.toLowerFirst()/]);
+[explorer.name.toLowerFirst()/].setCurrentWeight([game.explorer.currentWeight/]);
+[for( o : Object | explorer.objects)]
+[if not o.oclIsUndefined()]
+[explorer.name.toLowerFirst()/].addObject([o.name.toLowerFirst()/]);
+[/if]
+[/for]
+[for( n : Knowledge | explorer.knowledge)]
+[if not n.oclIsUndefined()]
+[explorer.name/].addKnowledge([n.name.toLowerFirst()/]);
+[/if]
+[/for]
+[/template]
+
+
+[template private fillPersons(persons : OrderedSet(Person))]
+[for( p : Person | persons)]
+[p.name.toLowerFirst()/].setDescription("[p.description/]");
+[p.name.toLowerFirst()/].setActivityCondition([p.activityCondition.name.toLowerFirst()/]);
+[p.name.toLowerFirst()/].setInteraction([p.interaction.name.toLowerFirst()/]);
+[p.name.toLowerFirst()/].setIsActive([tobolean(p.isActive)/]);
+[/for]
+[/template]
+
+[template private fillPaths(paths : OrderedSet(Path))]
+[for( p : Path | paths)]
+[p.name.toLowerFirst()/].setPlace1([p.Place1.name.toLowerFirst()/]);
+[p.name.toLowerFirst()/].setPlace2([p.Place2.name.toLowerFirst()/]);
+[if not p.openCondition.oclIsUndefined()]
+[p.name.toLowerFirst()/].setOpenCondition([p.openCondition.name.toLowerFirst()/]);
+[p.name.toLowerFirst()/].setOpen([tobolean(p.isOpen)/]);
+[/if]
+[/for]
+[/template]
+
+
+[template private fillPlaces(places : OrderedSet(Place))]
+[for (p : Place | places)]
+[for(prs : Person| p.persons)]
+[p.name.toLowerFirst()/].addPersons([prs.name.toLowerFirst()/]);
+[/for]
+
+[for(pa : Path| p.paths)]
+[p.name.toLowerFirst()/].addPaths([pa.name.toLowerFirst()/]);
+[/for]
+
+[for(o : Object| p.objects)]
+[p.name.toLowerFirst()/].addObject([o.name.toLowerFirst()/]);
+[/for]
+
+[for(n : Knowledge| p.knowledge)]
+[p.name.toLowerFirst()/].addKnowledge([n.name.toLowerFirst()/]);
+[/for]
+[/for]
+[/template]
+
+
+[template private fillActions(actions : OrderedSet(Action))]
+[for (a : Action | actions)]
+[for(o : Object | a.objectsToConsume)]
+[a.name.toLowerFirst()/].addObjectsToConsume([o.name.toLowerFirst()/]);
+[/for]
+
+[for(o : Object | a.objectsToGive)]
+[a.name.toLowerFirst()/].addObjectsTogive([o.name.toLowerFirst()/]);
+[/for]
+
+[for(n : Knowledge| a.knowledge)]
+[a.name.toLowerFirst()/].addKnowledge([n.name.toLowerFirst()/]);
+[/for]
+[/for]
+[/template]
+
+
+[template private fillChoice( choices : OrderedSet(Choice))]
+[for (ch : Choice | choices)]
+ [if not ch.description.oclIsUndefined()] 
+[ch.name.toLowerFirst()/].setDescription("[ch.description/]");
+[/if]
+[for(a : Action | ch.actions)]
+[ch.name.toLowerFirst()/].addActions([a.name.toLowerFirst()/]);
+[/for]
+[/for]
+[/template]
+
+[template private fillInteraction( interactions : OrderedSet(Interaction))]
+[for (it : Interaction | interactions)]
+[if not it.startCondition.oclIsUndefined()]
+[it.name.toLowerFirst()/].setStartCondition([it.startCondition.name.toLowerFirst()/]);
+[/if]
+[if not it.endCondition.oclIsUndefined()]
+[it.name.toLowerFirst()/].setEndCondition([it.endCondition.name.toLowerFirst()/]);
+[/if]
+[for(ch : Choice | it.choices)]
+[it.name.toLowerFirst()/].addChoices([ch.name.toLowerFirst()/]);
+[/for]
+[/for]
+[/template]
+
+[template private fillGame(game : Game)]
+[game.name.toLowerFirst()/].setExplorer([game.explorer.name.toLowerFirst()/]);
+[game.name.toLowerFirst()/].setStartingPlace([game.startingPlace.name.toLowerFirst()/]);
+[game.name.toLowerFirst()/].setMaxWeight([game.maxWeight/]);
+[for(fp : Place | game.finishingPlaces)]
+[game.name.toLowerFirst()/].addFinishingPlace([fp.name.toLowerFirst()/]);
+[/for]
+[/template]
+
+
+
+[template private FillElements(game : Game)]
+[game.getPlaces() -> fillPlaces()/];
+[game.getPaths() -> fillPaths()/];
+[game.getObjects() -> fillObjects()/];
+[game.getKnowledges() -> fillKnowledge()/];
+[game.getPersons() -> fillPersons()/];
+[game.getActions() -> fillActions()/];
+[game.getChoices() -> fillChoice()/];
+[game.getInteractions() -> fillInteraction()/];
+[game.fillGame()/];
+[game.getExplorateur().fillExplorateur(game)/];
+[/template]
+
+
+
+[query private getConditions(game : Game) : OrderedSet(Condition) = game.gameElements-> select(c  | c.oclIsTypeOf(Condition)) -> collect(c | c.oclAsType(Condition)) -> asOrderedSet() /]
+[query private getPlaces(game : Game) : OrderedSet(Place) = game.gameElements-> select(p  | p.oclIsTypeOf(Place)) -> collect(p | p.oclAsType(Place)) -> asOrderedSet() /]
+[query private getPaths(game : Game) : OrderedSet(Path) =game.gameElements-> select(p  | p.oclIsTypeOf(Path)) -> collect(p | p.oclAsType(Path)) -> asOrderedSet() /]
+[query private getObjects(game : Game) : OrderedSet(Object) = game.gameElements -> select(g  | g.oclIsTypeOf(Object)) -> collect(g | g.oclAsType(Object)) -> asOrderedSet() /]
+[query private getKnowledges(game : Game) : OrderedSet(Knowledge) = game.gameElements-> select(n  | n.oclIsTypeOf(Knowledge)) -> collect(n | n.oclAsType(Knowledge)) -> asOrderedSet() /]
+[query private getPersons(game : Game) : OrderedSet(Person) = game.gameElements-> select(p  | p.oclIsTypeOf(Person)) -> collect(p | p.oclAsType(Person)) -> asOrderedSet() /]
+[query private getActions(game : Game) : OrderedSet(Action) = game.getChoices()->collect(c | c.actions)-> select(a  | a.oclIsTypeOf(Action)) -> collect(a | a.oclAsType(Action)) -> asOrderedSet() /]
+[query private getChoices(game : Game) : OrderedSet(Choice) = game.getInteractions()->collect(i |i.choices)-> select(c  | c.oclIsTypeOf(Choice)) -> collect(c | c.oclAsType(Choice)) -> asOrderedSet() /]
+[query private getInteractions(game : Game) : OrderedSet(Interaction) = game.gameElements-> select(i  | i.oclIsTypeOf(Interaction)) -> collect(i | i.oclAsType(Interaction)) -> asOrderedSet() /]
+[query private getExplorateur(game : Game) : Explorer = game.explorer /]
+[query private getGameElements(game : Game) : OrderedSet(GameElement) = gameElements -> asOrderedSet()/]
+[query private tobolean(n : Integer) : Boolean = if (n = 0) then true else false endif /]

@@ -1,0 +1,14 @@
+#!/bin/bash
+ip link set dev eth0 up
+ip a a 192.168.111.130/25 dev eth0
+
+#ROUTAGE STATIQUE
+#ip route add 1.2.3.0/24 via 192.168.111.129
+#ip route add 1.2.3.128/25 via 192.168.111.129
+#ip route add 1.2.3.64/26 via 192.168.111.129
+#ip route add 1.2.3.32/27 via 192.168.111.129
+#ip route add 1.2.3.16/28 via 192.168.111.129
+
+
+#ROUTAGE DYNAMIQUE
+dhclient eth0

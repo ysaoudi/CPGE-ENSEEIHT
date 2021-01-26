@@ -1,0 +1,66 @@
+[comment encoding = UTF-8 /]
+[module toLTL('http://simplepdl')]
+
+
+[template public processtoLTL(aProcess : Process)]
+[comment @main/]
+[file (aProcess.name.concat('_VerificationsInvariants.ltl'), false, 'UTF-8')]
+#____________________________________________
+#                                            | 
+# Process [aProcess.name/]  
+#____________________________________________|
+#
+
+# Verification terminaison processus 
+[for (wd : WorkDefinition | aProcess.processElements->getWDs()) before ('op finished = ') separator (' /\\ ') after (';')][wd.name/]_finished[/for]
+[for (wd : WorkDefinition | aProcess.processElements->getWDs()) before ('op notStarted = ') separator (' /\\ ') after (';')][wd.name/]_notStarted[/for]
+[for (wd : WorkDefinition | aProcess.processElements->getWDs()) before ('op started = ') separator (' /\\ ') after (';')][wd.name/]_started[/for]
+[for (wd : WorkDefinition | aProcess.processElements->getWDs()) before ('op inProgress = ') separator (' /\\ ') after (';')][wd.name/]_inProgress[/for]
+
+# Une activite terminee n'evolue plus
+['[]'/] (finished => dead);
+# Une activite finit toujours pas cesser d'evoluer
+['[] <>'/] dead;
+# Une activite n'evoluant plus est terminee
+['[]'/] (dead => finished);
+# Une activite ne termine jamais
+['- <>'/] finished;
+
+# Une activite commencee ne peut pas redemarrer
+['[]'/] (started => ['- <>'/] notStarted);
+# Une activite finie ne peut pas etre en cours
+['[]'/] (finished => ['- <>'/] inProgress);
+# Une activite finie ne peut pas redemarrer 
+['[]'/] (finished => ['- <>'/] notStarted);
+# Une activite terminee signifie qu'elle a ete d'abord commencee
+['[]'/] (finished => started); 
+
+# Chaque activite est soit non commencee soit en cours soit terminee
+[for(wd : WorkDefinition | aProcess.processElements->getWDs())] ['[]'/] ([wd.name/]_notStarted + [wd.name/]_inProgress + [wd.name/]_finished = 1);
+[/for]
+[/file]
+[/template]
+
+[query public getWDs(elements : OrderedSet(ProcessElement)) : OrderedSet(WorkDefinition) = 
+	elements->select( e | e.oclIsTypeOf(WorkDefinition) )
+		->collect( e | e.oclAsType(WorkDefinition) )
+		->asOrderedSet()
+/]
+
+[query public getWSs(elements : OrderedSet(ProcessElement)) : OrderedSet(WorkSequence) = 
+	elements->select( e | e.oclIsTypeOf(WorkSequence) )
+		->collect( e | e.oclAsType(WorkSequence) )
+		->asOrderedSet()
+/]
+
+[template public getLinkType(ws : WorkSequence)]
+[if (ws.linkType = WorkSequenceType::startToStart)]
+	s2s
+[elseif (ws.linkType = WorkSequenceType::startToFinish)]
+	s2f
+[elseif (ws.linkType = WorkSequenceType::finishToStart)]
+	f2s
+[elseif (ws.linkType = WorkSequenceType::finishToFinish)]
+	f2f
+[/if]
+[/template]

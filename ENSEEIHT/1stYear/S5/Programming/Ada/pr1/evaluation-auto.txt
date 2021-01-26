@@ -1,0 +1,51 @@
+% Validation de http://cregut.svn.enseeiht.fr/2019/1sn/pim/tps/ysaoudi/pr1
+% Run on 2019-10-13 21:31:17.758589
+
+# Respect des fichiers fournis
+
+* Fichier alea.adb non modifié... ok
+* Fichier alea.ads non modifié... ok
+* Fichier exemple_alea.adb non modifié... ok
+* Fichier multiplications.adb modifié... ok
+* Fichier LISEZ-MOI.txt modifié... ok
+* Running gnatclean... ok
+* Compilation de multiplications.adb... ok
+
+  | x86_64-linux-gnu-gcc-8 -c -gnatwa -gnata -g multiplications.adb
+  | x86_64-linux-gnu-gcc-8 -c -gnatwa -gnata -g alea.adb
+  | x86_64-linux-gnu-gnatbind-8 -x multiplications.ali
+  | x86_64-linux-gnu-gnatlink-8 multiplications.ali -g
+
+* ./multiplications < "5 1 2 3 4 1 6 7 8 9 1 n"... ERREUR
+
+  | RÃ©viser la table de : 
+  | (Multip.  1)  5 *  8 : ? Mauvaise rÃ©ponse.
+  | 
+  | (Multip.  2)  5 *  5 : ? Mauvaise rÃ©ponse.
+  | 
+  | (Multip.  3)  5 *  6 : ? Mauvaise rÃ©ponse.
+  | 
+  | (Multip.  4)  5 *  1 : ? Mauvaise rÃ©ponse.
+  | 
+  | (Multip.  5)  5 *  9 : ? Mauvaise rÃ©ponse.
+  | 
+  | (Multip.  6)  5 *  5 : ? Mauvaise rÃ©ponse.
+  | 
+  | (Multip.  7)  5 *  7 : ? Mauvaise rÃ©ponse.
+  | 
+  | (Multip.  8)  5 *  1 : ? Mauvaise rÃ©ponse.
+  | 
+  | (Multip.  9)  5 *  4 : ? Mauvaise rÃ©ponse.
+  | 
+  | (Multip.  10)  5 *  7 : ? Mauvaise rÃ©ponse.
+  | 
+  | Tout est faux. Volontaire?
+  | 
+  | 
+  | Voulez-vous rÃ©viser une autre table? (Oui/Non): 
+
+
+  | 
+  | raised ADA.IO_EXCEPTIONS.END_ERROR : a-textio.adb:559
+
+* Running gnatclean... ok

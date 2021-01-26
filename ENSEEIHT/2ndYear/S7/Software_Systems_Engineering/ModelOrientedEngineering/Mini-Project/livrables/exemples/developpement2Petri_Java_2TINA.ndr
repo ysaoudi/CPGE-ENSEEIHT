@@ -1,0 +1,73 @@
+t 170.0 240.0 Conception_start 0 w n
+t 185.0 205.0 Conception_finish 0 w n
+t 235.0 335.0 RedactionDoc_start 0 w n
+t 180.0 280.0 RedactionDoc_finish 0 w n
+t 235.0 135.0 Programmation_start 0 w n
+t 295.0 160.0 Programmation_finish 0 w n
+t 325.0 285.0 RedactionTests_start 0 w n
+t 340.0 215.0 RedactionTests_finish 0 w n
+p 75.0 270.0 Conception_notStarted 1 n
+p 250.0 295.0 Conception_started 0 n
+p 105.0 170.0 Conception_inProgress 0 n
+p 165.0 170.0 Conception_finished 0 n
+p 225.0 425.0 RedactionDoc_notStarted 1 n
+p 280.0 410.0 RedactionDoc_started 0 n
+p 155.0 355.0 RedactionDoc_inProgress 0 n
+p 90.0 315.0 RedactionDoc_finished 0 n
+p 170.0 75.0 Programmation_notStarted 1 n
+p 215.0 50.0 Programmation_started 0 n
+p 305.0 85.0 Programmation_inProgress 0 n
+p 375.0 140.0 Programmation_finished 0 n
+p 355.0 370.0 RedactionTests_notStarted 1 n
+p 400.0 340.0 RedactionTests_started 0 n
+p 405.0 245.0 RedactionTests_inProgress 0 n
+p 430.0 175.0 RedactionTests_finished 0 n
+p 95.0 210.0 concepteur_resource 3 n
+p 270.0 75.0 developpeur_resource 2 n
+p 255.0 235.0 machine_resource 4 n
+p 180.0 370.0 redacteur_resource 1 n
+p 400.0 275.0 testeur_resource 2 n
+e RedactionTests_finish RedactionTests_finished 1 n
+e Programmation_finished RedactionTests_finish ?1 n
+e RedactionTests_inProgress RedactionTests_finish 1 n
+e machine_resource RedactionTests_finish 2 n
+e testeur_resource RedactionTests_finish 1 n
+e RedactionTests_start RedactionTests_started 1 n
+e RedactionTests_start RedactionTests_inProgress 1 n
+e Conception_started RedactionTests_start ?1 n
+e RedactionTests_notStarted RedactionTests_start 1 n
+e machine_resource RedactionTests_start 2 n
+e testeur_resource RedactionTests_start 1 n
+e Programmation_finish Programmation_finished 1 n
+e Programmation_inProgress Programmation_finish 1 n
+e developpeur_resource Programmation_finish 2 n
+e machine_resource Programmation_finish 3 n
+e Programmation_start Programmation_started 1 n
+e Programmation_start Programmation_inProgress 1 n
+e Conception_finished Programmation_start ?1 n
+e Programmation_notStarted Programmation_start 1 n
+e developpeur_resource Programmation_start 2 n
+e machine_resource Programmation_start 3 n
+e RedactionDoc_finish RedactionDoc_finished 1 n
+e Conception_finished RedactionDoc_finish ?1 n
+e RedactionDoc_inProgress RedactionDoc_finish 1 n
+e machine_resource RedactionDoc_finish 1 n
+e redacteur_resource RedactionDoc_finish 1 n
+e RedactionDoc_start RedactionDoc_started 1 n
+e RedactionDoc_start RedactionDoc_inProgress 1 n
+e Conception_started RedactionDoc_start ?1 n
+e RedactionDoc_notStarted RedactionDoc_start 1 n
+e machine_resource RedactionDoc_start 1 n
+e redacteur_resource RedactionDoc_start 1 n
+e Conception_finish Conception_finished 1 n
+e Conception_inProgress Conception_finish 1 n
+e concepteur_resource Conception_finish 2 n
+e machine_resource Conception_finish 2 n
+e Conception_start Conception_started 1 n
+e Conception_start Conception_inProgress 1 n
+e Conception_notStarted Conception_start 1 n
+e concepteur_resource Conception_start 2 n
+e machine_resource Conception_start 2 n
+h developpement2Petri_Java_2TINA
+
+

@@ -1,0 +1,33 @@
+grammar fr.n7.XPDL with org.eclipse.xtext.common.Terminals
+generate xPDL1 "http://www.n7.fr/XPDL"
+
+Process :
+	'process' name=ID '{'
+	    processElements+=ProcessElement*
+	'}' ;
+
+ProcessElement returns ProcessElement:
+	WorkDefinition | WorkSequence | Guidance | Resource;
+	
+WorkDefinition :
+	'wd' name=ID ( 'uses' '(' resources+=Allocation ( ',' resources+=Allocation)* ')' )?;
+
+WorkSequence :
+	'ws' linkType=WorkSequenceType
+		'from' predecessor=[WorkDefinition]
+		'to' successor=[WorkDefinition] ;
+
+Guidance :
+	'guidance' text=ID  ( 'for' '(' element+=[ProcessElement|ID] ( "," element+=[ProcessElement|ID])* ')' )?;
+
+Resource :
+    'rs' name=ID
+    'counting' count=INT
+    ;
+	
+Allocation returns Allocation :
+    'allocation' 'of' count=INT
+    resources=[Resource]
+	;
+enum WorkSequenceType returns WorkSequenceType:
+				startToStart = 's2s' | finishToStart = 'f2s' | startToFinish = 's2f' | finishToFinish = 'f2f';

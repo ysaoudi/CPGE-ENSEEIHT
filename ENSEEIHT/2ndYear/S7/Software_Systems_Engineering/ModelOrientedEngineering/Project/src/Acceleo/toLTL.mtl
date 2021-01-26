@@ -1,0 +1,24 @@
+[comment encoding = UTF-8 /]
+[module toLTL('http://www.n7.fr/idm/projet/GAME')]
+
+[template public gameToLTL(aGame : Game)]
+[comment @main/]
+[file (aGame.name.concat('_GameAssertions.ltl'), false, 'UTF-8')]
+
+# Game End Assertion 
+[for (finishingPlace : Place | aGame.finishingPlaces) before (' op finished = ') separator ('\\/') after (';')] [finishingPlace.name/][/for]
+op started = [aGame.startingPlace.name/];
+
+# A finished game doesn't evolve anymore
+['[]'/] (finished => dead);
+# A game will always eventually stop evolving
+['[] <>'/] dead;
+# A game not evolving is a finished one
+['[]'/] (dead => finished);
+# A game never finishes : Should be false!
+['- <>'/] finished;
+# A finished game will not restart
+['[]'/] (finished => ['- <>'/] started);
+
+[/file]
+[/template]

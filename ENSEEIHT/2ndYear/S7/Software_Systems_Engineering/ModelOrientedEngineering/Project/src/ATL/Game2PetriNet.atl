@@ -1,0 +1,277 @@
+module Game2PetriNet;
+create OUT: petrinet from  IN: game;
+
+-- Obtenir le processus qui contient ce process element.
+-- Remarque: Ce helper ne serait pas utile si une référence opposite
+-- avait été placée entre Process et ProcessElement
+helper context game!GameElement
+def: getGame(): game!Game =
+	game!Game.allInstances()
+		->select(p | p.gameElements->includes(self))
+		->asSequence()->first();
+
+
+-- Traduire un Game en un PetriNet de même nom
+rule Game2PetriNet {
+	from g: game!Game
+	to pn: petrinet!PetriNet (name <- g.name)
+}
+
+
+-- Traduire un Object en un motif sur le réseau de Petri
+rule Object2PetriNet {
+	from o: game!Object
+	to
+		p_object :  petrinet!Places(
+					   name <- o.name,
+					   NombreTokens <- o.quantity,
+					   noeudNet <- o.getGame()
+					)
+}
+
+
+-- Traduire un Knowledge en un motif sur le réseau de Petri
+rule Knowledge2PetriNet {
+	from k: game!Knowledge
+	to
+		p_knowledge :  petrinet!Places(
+					   name <- k.name,
+					   NombreTokens <- 0,
+					   noeudNet <- k.getGame()
+					)
+}
+
+
+-- Traduire un Place en un motif sur le réseau de Petri
+rule Place2PetriNet {
+	from p: game!Place
+	to
+		p_place :  petrinet!Places(
+					   name <- p.name,
+					   NombreTokens <- if p.placeType = #start then 1 else 0 endif,
+					   noeudNet <- p.getGame()
+					)
+}
+
+
+-- Traduire un Person en un motif sur le réseau de Petri
+rule Person2PetriNet {
+	from p: game!Person
+	to
+		t_person :  petrinet!Transitions(
+				name <- p.name,
+				noeudNet <- p.getGame()
+				)
+			
+		, p_interaction : petrinet!Places(
+				name <- p.interaction.name,
+				NombreTokens <- 0,
+				noeudNet <- p.getGame()
+				)
+				
+		, arc_person_inter : petrinet!Arcs(
+				poids_arc <- 1,
+				type <- #normal,
+				source <- t_person,
+				destination <- p_interaction,
+				arcNet <- p.getGame()
+			)
+			
+		, arc_place_person : petrinet!Arcs(
+				poids_arc <- 1,
+				type <- #normal,
+				source <- thisModule.resolveTemp(p.place, 'p_place'),
+				destination <- t_person,
+				arcNet <- p.getGame()
+			)
+				
+		do {
+			if (p.isActive = 0){
+				thisModule.subCondition2PetriNet(p.activityCondition.firstCondition, t_person, p.getGame());
+				for (subCond in p.activityCondition.nextConditions) {
+					thisModule.subCondition2PetriNet(subCond.subCondition, t_person, p.getGame());
+				}
+			}
+			
+			for(c in p.interaction.choices) {
+				for(a in c.actions) {
+					thisModule.Action2PetriNet(a, p_interaction, p.getGame());
+				}
+			}
+		}
+}
+		
+-- Traduire un Path en un motif sur le réseau de Petri
+rule Path2PetriNet {
+	from p: game!Path
+	to
+		t_path :  petrinet!Transitions(
+				name <- p.name,
+				noeudNet <- p.getGame()
+				)
+		
+		,  arc_fromPlace :  petrinet!Arcs(
+				poids_arc <- 1,
+				type <- #normal,
+				source <- thisModule.resolveTemp(p.Place1,'p_place'),
+				destination <- t_path,
+				arcNet <- p.getGame()
+			)
+			
+		,  arc_toPlace :  petrinet!Arcs(
+				poids_arc <- 1,
+				type <- #normal,
+				source <- t_path,
+				destination <- thisModule.resolveTemp(p.Place2, 'p_place'),
+				arcNet <- p.getGame()
+			)
+			
+			
+		do {
+			if (p.isOpen = 0){
+				thisModule.subCondition2PetriNet(p.openCondition.firstCondition, t_path, p.getGame());
+				for (subCond in p.openCondition.nextConditions) {
+					thisModule.subCondition2PetriNet(subCond.subCondition, t_path, p.getGame());
+				}
+			}
+			
+			if (not p.transmittedElements -> isEmpty()){
+				for (o in p.transmittedElements) {
+					thisModule.Path2Objettransmitted(t_path,o,p.getGame());
+				}
+			}
+			
+			if (not p.consumedElements -> isEmpty()){
+				for (o in p.consumedElements) {
+					thisModule.Path2ObjetConsumed(t_path,o,p.getGame());
+				}
+			}
+		}
+}
+
+
+-- Traduire un Interaction en un motif sur le réseau de Petri
+rule Action2PetriNet(action: game!Action, p_interaction : petrinet!Places, game : game!Game) {
+	to
+		t_action :  petrinet!Transitions(
+				name <- action.name,
+				noeudNet <- game
+				)
+			
+		, arc_interaction_action :  petrinet!Arcs(
+				poids_arc <- 1,
+				type <- #normal,
+				source <- p_interaction,
+				destination <- t_action,
+				arcNet <- game
+			)
+		
+		, arc_action_place :  petrinet!Arcs(
+				poids_arc <- 1,
+				type <- #normal,
+				source <- t_action,
+				destination <- thisModule.resolveTemp(action.choice.interaction.person.place, 'p_place'),
+				arcNet <- game
+			)
+			
+		do {
+			
+			if (not action.objectsToGive -> isEmpty()){
+				for (o in action.objectsToGive) {
+					thisModule.Action2ObjetGive(t_action,game,o);
+				}
+			}
+			if (not action.objectsToConsume -> isEmpty()){
+				for (o in action.objectsToConsume) {
+					thisModule.Action2ObjetConsume(t_action,game,o);
+				}
+			}
+			if (not action.knowledge -> isEmpty()){
+				for (k in action.knowledge) {
+					thisModule.Action2Knowledge(t_action,game,k);
+				}
+			}
+		}
+		
+}
+
+rule Action2ObjetGive (t_action: petrinet!Transitions, game : game!Game, o : game!Object) {
+	to
+		arc_action_objectGive :  petrinet!Arcs(
+				poids_arc <- 1,
+				type <- #normal,
+				source <- t_action,
+				destination <- thisModule.resolveTemp(o, 'p_object'),
+				arcNet <- game
+			)
+}
+
+
+rule Action2ObjetConsume (t_action: petrinet!Transitions, game : game!Game, o : game!Object) {
+	to
+		arc_objectCons_action :  petrinet!Arcs(			
+			poids_arc <- 1,
+			type <- #normal,
+			source <- thisModule.resolveTemp(o, 'p_object'),
+			destination <- t_action,
+			arcNet <- game
+		)
+}
+
+rule Action2Knowledge (t_action: petrinet!Transitions, game : game!Game, k : game!Knowledge) {
+	to
+		 arc_action_Knowledge :  petrinet!Arcs(
+				poids_arc <- 1,
+				type <- #normal,
+				source <- t_action,
+				destination <- thisModule.resolveTemp(k, 'p_knowledge'),
+				arcNet <- game
+			)
+}
+
+
+rule subCondition2PetriNet (subCondition : game!SubConditions, trans : petriNet!Transitions, g : game!Game) {
+	to 
+		arc_contition_element : petrinet!Arcs(
+				poids_arc <- if subCondition.compared = 0 then 1 else subCondition.compared endif,
+				type <- if subCondition.compared = 0 then #inhibitor else #read_arc endif,
+				source <- if subCondition.gameElement -> oclIsTypeOf(game!Object) then 
+							thisModule.resolveTemp(subCondition.gameElement, 'p_object') 
+						else 
+							thisModule.resolveTemp(subCondition.gameElement, 'p_knowledge') 
+						endif,
+				destination <- trans,
+				arcNet <- g
+			)
+}
+
+rule Path2Objettransmitted(t_path : petrinet!Transitions, elem : game!GameElement, g : game!Game) {
+	to
+		arc_path_objecttransmitted : petrinet!Arcs(
+				poids_arc <- 1,
+				type <- #normal,
+				source <- t_path,
+				destination <- if elem -> oclIsTypeOf(game!Object) then 
+							thisModule.resolveTemp(elem, 'p_object') 
+						else 
+							thisModule.resolveTemp(elem, 'p_knowledge') 
+						endif,
+				arcNet <- g
+			)
+}
+
+
+rule Path2ObjetConsumed(t_path : petrinet!Transitions, elem : game!GameElement, g : game!Game) {
+	to
+		arc_path_objecttransmitted : petrinet!Arcs(
+				poids_arc <- 1,
+				type <- #normal,
+				source <- if elem -> oclIsTypeOf(game!Object) then 
+							thisModule.resolveTemp(elem, 'p_object') 
+						else 
+							thisModule.resolveTemp(elem, 'p_knowledge') 
+						endif,
+				destination <- t_path,
+				arcNet <- g
+			)
+}

@@ -1,0 +1,35 @@
+#____________________________________________
+#                                            | 
+# Process developpement  
+#____________________________________________|
+#
+
+# Verification terminaison processus 
+op finished = Conception_finished /\ RedactionDoc_finished /\ Programmation_finished /\ RedactionTests_finished;
+op notStarted = Conception_notStarted /\ RedactionDoc_notStarted /\ Programmation_notStarted /\ RedactionTests_notStarted;
+op started = Conception_started /\ RedactionDoc_started /\ Programmation_started /\ RedactionTests_started;
+op inProgress = Conception_inProgress /\ RedactionDoc_inProgress /\ Programmation_inProgress /\ RedactionTests_inProgress;
+
+# Une activite terminee n'evolue plus
+[] (finished => dead);
+# Une activite finit toujours pas cesser d'evoluer
+[] <> dead;
+# Une activite n'evoluant plus est terminee
+[] (dead => finished);
+# Une activite ne termine jamais
+- <> finished;
+
+# Une activite commencee ne peut pas redemarrer
+[] (started => - <> notStarted);
+# Une activite finie ne peut pas etre en cours
+[] (finished => - <> inProgress);
+# Une activite finie ne peut pas redemarrer 
+[] (finished => - <> notStarted);
+# Une activite terminee signifie qu'elle a ete d'abord commencee
+[] (finished => started); 
+
+# Chaque activite est soit non commencee soit en cours soit terminee
+[] (Conception_notStarted + Conception_inProgress + Conception_finished = 1);
+[] (RedactionDoc_notStarted + RedactionDoc_inProgress + RedactionDoc_finished = 1);
+[] (Programmation_notStarted + Programmation_inProgress + Programmation_finished = 1);
+[] (RedactionTests_notStarted + RedactionTests_inProgress + RedactionTests_finished = 1);

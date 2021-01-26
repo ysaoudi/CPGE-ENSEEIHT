@@ -1,0 +1,56 @@
+import 'GAME.ecore'
+
+package game
+
+context Game
+inv hasCorrectName('Invalid name : ' + self.name) : 
+	self.name.size() >= 2 and self.name.matches('[A-Za-z_][A-Za-z0-9_]*')
+inv isStartingPlaceDefined :
+	 (not startingPlace.oclIsUndefined()) and startingPlace->asSequence()->size() = 1
+inv doFinishingPlacesExist :
+	finishingPlaces->asSequence()->size() >= 1
+
+context GameElement 
+def: Game() : Game = Game.allInstances()->select(g | g.gameElements->includes(self))->asSequence()->first()
+inv hasCorrectName('Invalid name : ' + self.name) : 
+	self.name.size() >= 2 and self.name.matches('[A-Za-z_][A-Za-z0-9_]*')
+		
+context Object
+inv hasValidWeight: self.size >= 0
+
+context Knowledge
+inv KnowledgeHaveDifferentNames : 
+	Knowledge.allInstances()
+	->forAll(k1, k2 | k1 <> k2 implies k1.name <> k2.name)
+
+context Explorer
+def: Game() : Game = Game.allInstances()->select(g | g.explorer->includes(self))->asSequence()->first()
+inv respectsMaxWeight : currentWeight <= Game().maxWeight
+	
+context Path
+inv hasCorrectTransmittedElements('Incorrect Transmission Elements Type ' + transmittedElements->oclType().toString()):
+	transmittedElements->oclIsUndefined() or transmittedElements->forAll(e : GameElement |
+							e.oclType() = Object
+							or e.oclType() = Knowledge
+						)
+inv hasCorrectConsumedElements('Incorrect Consumed Elements Type ' + consumedElements->oclType().toString()):
+	consumedElements->oclIsUndefined() or consumedElements->forAll(e : GameElement |
+							e.oclType() = Object
+							or e.oclType() = Knowledge
+						)	
+inv hasDifferentExtremities: 
+	Place1 <> Place2
+	
+context Place
+inv twoPlacesHaveDifferentNames : 
+	Place.allInstances()
+	->forAll(p1, p2 | p1 <> p2 implies p1.name <> p2.name)
+inv twoPeopleHaveDifferentNames :
+	Person.allInstances()
+	->forAll(p1, p2 | p1 <> p2 implies p1.name <> p2.name)
+
+context SubConditions
+inv hasCorrectConsumedElements('SubCondition on Incorrect Type or GameElement SubType ' + gameElement.name + '::' + gameElement.oclType().toString() ):
+	self.gameElement.oclType() = Object or self.gameElement.oclType() = Knowledge
+
+endpackage

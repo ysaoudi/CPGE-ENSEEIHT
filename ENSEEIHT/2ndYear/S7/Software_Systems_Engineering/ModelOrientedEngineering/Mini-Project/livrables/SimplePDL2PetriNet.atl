@@ -1,0 +1,138 @@
+module SimplePDL2PetriNet;
+create OUT: PetriNet from  IN: SimplePDL;
+
+helper context SimplePDL!ProcessElement
+def: getProcess(): SimplePDL!Process =
+	SimplePDL!Process.allInstances()
+		->select(p | p.processElements->includes(self))
+		->asSequence()->first();
+
+rule Process2PetriNet {
+    from p: SimplePDL!Process
+    to pn: PetriNet!PetriNet (name <- p.name)
+}
+
+
+rule WorkDefinition2PetriNet {
+    from wd: SimplePDL!WorkDefinition
+    to
+		--PLACES
+        p_notStarted: PetriNet!Place(
+            name <- wd.name + '_notStarted',
+            tokensNb <- 1,
+            net <- wd.getProcess()
+		),
+        
+		p_started: PetriNet!Place(
+            name <- wd.name + '_started',
+            tokensNb <- 0,
+            net <- wd.getProcess()
+		),
+		
+        p_inProgress: PetriNet!Place(
+            name <- wd.name + '_inProgress',
+            tokensNb <- 0,
+            net <- wd.getProcess()
+		),
+        
+        p_finished: PetriNet!Place(
+            name <- wd.name + '_finished',
+            tokensNb <- 0,
+            net <- wd.getProcess()
+		),
+        
+		--TRANSITIONS
+        t_start: PetriNet!Transition(
+            name <- wd.name + '_start',
+            net <- wd.getProcess()
+		),
+            
+        t_finish: PetriNet!Transition(
+            name <- wd.name + '_finish',
+            net <- wd.getProcess()
+		),
+        
+		--ARCS
+        a_notStarted2start: PetriNet!Arc(
+            tokensNb <- 1,
+            net <- wd.getProcess(),
+			source <- p_notStarted,
+            target <- t_start
+		),
+        
+        a_start2started: PetriNet!Arc(
+            tokensNb <- 1,
+            net <- wd.getProcess(),
+			source <- t_start,
+            target <- p_started
+		),
+        
+        a_start2inProgress: PetriNet!Arc(
+            tokensNb <- 1,
+            net <- wd.getProcess(),
+        	source <- t_start,
+            target <- p_inProgress            
+		),
+        
+        a_inProgress2finish: PetriNet!Arc(
+            tokensNb <- 1,
+            net <- wd.getProcess(),
+        	source <- p_inProgress,
+            target <- t_finish
+		),
+        
+        a_finish2finished: PetriNet!Arc(
+            tokensNb <- 1,
+            net <- wd.getProcess(),
+        	source <- t_finish,
+            target <- p_finished
+		)
+}
+
+rule WorkSequence2PetriNet {
+    from ws: SimplePDL!WorkSequence
+    
+    to
+        a_ws: PetriNet!Arc(
+        	tokensNb <- 1,
+            kind <- #readArc,
+            net <- ws.successor.getProcess(),
+            source <-   thisModule.resolveTemp(ws.predecessor,
+            			if((ws.linkType = #finishToStart) or (ws.linkType = #finishToFinish))
+            				then 'p_finished'
+						else 'p_started'
+						endif),
+            target <-   thisModule.resolveTemp(ws.successor,
+            			if((ws.linkType = #finishToStart) or (ws.linkType = #startToStart))
+            				then 't_start'
+						else 't_finish'
+            			endif)
+		)
+}
+
+rule Allocation2PetriNet {
+	from allocation: SimplePDL!Allocation	
+	to
+		a_allocateResource: PetriNet!Arc(
+			tokensNb <- allocation.count,
+			net <- allocation.resources.getProcess(),
+			source <- allocation.resources,
+			target <- thisModule.resolveTemp(allocation.wd, 't_start')
+		),
+		a_deallocateResource: PetriNet!Arc(
+			tokensNb <- allocation.count,
+			net <- allocation.resources.getProcess(),
+			source <- allocation.resources,
+			target <- thisModule.resolveTemp(allocation.wd, 't_finish')
+		)		
+}
+
+rule Resource2PetriNet {
+	from resource: SimplePDL!Resource
+	to
+		p_resource: PetriNet!Place(
+			name <- resource.name,
+			tokensNb <- resource.count,
+			net <- resource.getProcess()
+		)
+}

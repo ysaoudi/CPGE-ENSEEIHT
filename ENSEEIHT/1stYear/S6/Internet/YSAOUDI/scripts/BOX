@@ -1,0 +1,43 @@
+#!/bin/bash
+ip link set dev eth0 up
+ip a a 192.168.111.129/25 dev eth0
+
+ip link set dev eth1 up
+ip a a 1.2.3.129/25 dev eth1
+
+#ROUTAGE STATIQUE
+#echo 1 > /proc/sys/net/ipv4/ip_forward
+
+#ip route add 1.2.3.16/28 via 1.2.3.130
+#ip route add 1.2.3.32/27 via 1.2.3.130
+#ip route add 1.2.3.64/26 via 1.2.3.130
+
+#Serveur DHCP
+ip route add default via 1.2.3.130
+service isc-dhcp-server start
+
+#Pare-feu
+#NAT / Masquerade Traduction de l'adresse privée en adresse publique externe
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+
+#Filtrage
+#Tout refuser
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+# Accepter les ping ICMP
+iptables -t filter -A OUTPUT -p icmp -j ACCEPT
+iptables -t filter -A INPUT -p icmp -j ACCEPT
+iptables -t filter -A FORWARD -p icmp -j ACCEPT
+# Accepter le DHCP
+iptables  -A INPUT -i eth0 -p udp --dport 67:68 --sport 67:68 -j ACCEPT
+# Accepter le DNS
+iptables -t filter -A FORWARD -d 1.2.3.19/28 -p udp --dport 53 -j ACCEPT
+iptables -t filter -A FORWARD -s 1.2.3.19/28 -p udp --sport 53 -j ACCEPT
+# Accepter le WEB
+iptables -t filter -A FORWARD -d 1.2.3.20/28 -p tcp --dport 80 -j ACCEPT
+iptables -t filter -A FORWARD -s 1.2.3.20/28 -p tcp --sport 80 -j ACCEPT
+# Accepter le FTP
+iptables -A FORWARD -d 1.2.3.21/28 -p tcp --dport 21 -j ACCEPT
+iptables -A FORWARD -s 1.2.3.21/28 -p tcp --sport 21 -j ACCEPT
+iptables -A FORWARD -p tcp --sport 1024: --dport 1024: -j ACCEPT

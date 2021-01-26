@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ASCII"?>
+<game:Game xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:game="http://www.n7.fr/idm/projet/GAME" name="EnigmaGame" maxWeight="3" startingPlace="//@gameElements.0" finishingPlaces="//@gameElements.1 //@gameElements.2">
+  <explorer name="Hamid" objects="//@gameElements.5" currentWeight="3" currentPlace="//@gameElements.0"/>
+  <gameElements xsi:type="game:Place" name="Enigma" persons="//@gameElements.10" paths="//@gameElements.3 //@gameElements.4">
+    <description text="Starting Place"/>
+  </gameElements>
+  <gameElements xsi:type="game:Place" name="Success" placeType="finish" paths="//@gameElements.3">
+    <description text="Success!"/>
+  </gameElements>
+  <gameElements xsi:type="game:Place" name="Failure" placeType="finish" paths="//@gameElements.4">
+    <description text="Failure!"/>
+  </gameElements>
+  <gameElements xsi:type="game:Path" name="EnigmaToSuccess" openCondition="//@gameElements.8" Place1="//@gameElements.0" Place2="//@gameElements.1">
+    <description text="PATH TO SUCCESS"/>
+  </gameElements>
+  <gameElements xsi:type="game:Path" name="EnigmaToFailure" openCondition="//@gameElements.7" Place1="//@gameElements.0" Place2="//@gameElements.2">
+    <description text="PATH TO FAILURE"/>
+  </gameElements>
+  <gameElements xsi:type="game:Object" name="Attempt" quantity="3" isVisible="1" size="1">
+    <description text="ATTEMPTS TO ANSWER ENIGMA"/>
+  </gameElements>
+  <gameElements xsi:type="game:Knowledge" name="Victory" isActive="1">
+    <description text="VICTORY IS REQUIRED FOR SUCCESS (lol)"/>
+  </gameElements>
+  <gameElements xsi:type="game:Condition" name="hasFailedEnigma" explorer="//@explorer">
+    <firstCondition gameElement="//@gameElements.5"/>
+  </gameElements>
+  <gameElements xsi:type="game:Condition" name="hasAnsweredCorrectly" explorer="//@explorer">
+    <firstCondition compared="1" gameElement="//@gameElements.6"/>
+  </gameElements>
+  <gameElements xsi:type="game:Condition" name="canAnswer" explorer="//@explorer">
+    <firstCondition gameElement="//@gameElements.6"/>
+    <nextConditions logicalOperator="AND">
+      <subCondition comparator="MORETHAN" compared="1" gameElement="//@gameElements.5"/>
+    </nextConditions>
+  </gameElements>
+  <gameElements xsi:type="game:Person" name="Phoenix" description="Phoenix's Famous Question" activityCondition="//@gameElements.9" place="//@gameElements.0" interaction="//@gameElements.11"/>
+  <gameElements xsi:type="game:Interaction" name="AnswerPhoenix" description="Interact with Phoenix" person="//@gameElements.10">
+    <choices name="Answer" interaction="//@gameElements.11" description="Answer Enigma">
+      <actions name="wrongAnswer" choice="//@gameElements.11/@choices.0" objectsToConsume="//@gameElements.5"/>
+      <actions name="rightAnswer" choice="//@gameElements.11/@choices.0" knowledge="//@gameElements.6"/>
+    </choices>
+  </gameElements>
+</game:Game>

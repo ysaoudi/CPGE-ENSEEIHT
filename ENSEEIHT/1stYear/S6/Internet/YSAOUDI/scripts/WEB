@@ -1,0 +1,13 @@
+#!/bin/bash
+ip link set dev eth0 up
+ip a a 1.2.3.20/28 dev eth0
+
+#ROUTAGE STATIQUE
+#ip route add 192.168.111.128/25 via 1.2.3.17
+#ip route add 1.2.3.128/25 via 1.2.3.17
+#ip route add 1.2.3.64/26 via 1.2.3.17
+#ip route add 1.2.3.32/27 via 1.2.3.17
+
+#ROUTAGE DYNAMIQUE + SERVEUR WEB
+ip route add default via 1.2.3.17
+service apache2 start

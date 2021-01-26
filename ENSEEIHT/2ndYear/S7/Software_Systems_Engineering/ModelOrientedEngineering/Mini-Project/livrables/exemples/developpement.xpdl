@@ -1,0 +1,18 @@
+process developpement {
+	rs concepteur counting 3
+	rs developpeur counting 2
+	rs machine counting 4
+	rs redacteur counting 1
+	rs testeur counting 2
+	wd Conception uses (allocation of 2 concepteur, allocation of 2 machine)
+	wd RedactionDoc uses (allocation of 1 machine, allocation of 1 redacteur)
+	wd Programmation uses (allocation of 2 developpeur, allocation of 3 machine)
+	wd RedactionTests uses (allocation of 2 machine, allocation of 1 testeur)
+	ws f2f from Conception to RedactionDoc
+	ws s2s from Conception to RedactionDoc
+	ws f2s from Conception to Programmation
+	ws s2s from Conception to RedactionTests
+	ws f2f from RedactionTests to Programmation
+	guidance Guidance for (Conception, RedactionTests)
+
+}

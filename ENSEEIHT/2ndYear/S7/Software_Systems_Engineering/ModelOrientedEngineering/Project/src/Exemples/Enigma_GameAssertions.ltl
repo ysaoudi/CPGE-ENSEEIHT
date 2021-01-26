@@ -1,0 +1,14 @@
+# Game End Assertion 
+op finished = Success \/ Failure;
+op started = Enigma;
+
+# A finished game doesn't evolve anymore
+[] (finished => dead);
+# A game will always eventually stop evolving
+[] <> dead;
+# A game not evolving is a finished one
+[] (dead => finished);
+# A game never finishes : Should be false!
+- <> finished;
+# A finished game will not restart
+[] (finished => - <> started);

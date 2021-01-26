@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<petriNet:PetriNet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:petriNet="http://www.example.org/petriNet" name="developpement">
+  <nodes xsi:type="petriNet:Place" name="Conception_notStarted" outgoing="//@arcs.0" tokensNb="1"/>
+  <nodes xsi:type="petriNet:Place" name="Conception_started" outgoing="//@arcs.20 //@arcs.23" ingoing="//@arcs.1"/>
+  <nodes xsi:type="petriNet:Place" name="Conception_inProgress" outgoing="//@arcs.3" ingoing="//@arcs.2"/>
+  <nodes xsi:type="petriNet:Place" name="Conception_finished" outgoing="//@arcs.21 //@arcs.22" ingoing="//@arcs.4"/>
+  <nodes xsi:type="petriNet:Transition" name="Conception_start" outgoing="//@arcs.1 //@arcs.2" ingoing="//@arcs.0 //@arcs.25 //@arcs.27"/>
+  <nodes xsi:type="petriNet:Transition" name="Conception_finish" outgoing="//@arcs.4" ingoing="//@arcs.3 //@arcs.26 //@arcs.28"/>
+  <nodes xsi:type="petriNet:Place" name="RedactionDoc_notStarted" outgoing="//@arcs.5" tokensNb="1"/>
+  <nodes xsi:type="petriNet:Place" name="RedactionDoc_started" ingoing="//@arcs.6"/>
+  <nodes xsi:type="petriNet:Place" name="RedactionDoc_inProgress" outgoing="//@arcs.8" ingoing="//@arcs.7"/>
+  <nodes xsi:type="petriNet:Place" name="RedactionDoc_finished" ingoing="//@arcs.9"/>
+  <nodes xsi:type="petriNet:Transition" name="RedactionDoc_start" outgoing="//@arcs.6 //@arcs.7" ingoing="//@arcs.5 //@arcs.20 //@arcs.29 //@arcs.31"/>
+  <nodes xsi:type="petriNet:Transition" name="RedactionDoc_finish" outgoing="//@arcs.9" ingoing="//@arcs.8 //@arcs.21 //@arcs.30 //@arcs.32"/>
+  <nodes xsi:type="petriNet:Place" name="Programmation_notStarted" outgoing="//@arcs.10" tokensNb="1"/>
+  <nodes xsi:type="petriNet:Place" name="Programmation_started" ingoing="//@arcs.11"/>
+  <nodes xsi:type="petriNet:Place" name="Programmation_inProgress" outgoing="//@arcs.13" ingoing="//@arcs.12"/>
+  <nodes xsi:type="petriNet:Place" name="Programmation_finished" outgoing="//@arcs.24" ingoing="//@arcs.14"/>
+  <nodes xsi:type="petriNet:Transition" name="Programmation_start" outgoing="//@arcs.11 //@arcs.12" ingoing="//@arcs.10 //@arcs.22 //@arcs.33 //@arcs.35"/>
+  <nodes xsi:type="petriNet:Transition" name="Programmation_finish" outgoing="//@arcs.14" ingoing="//@arcs.13 //@arcs.34 //@arcs.36"/>
+  <nodes xsi:type="petriNet:Place" name="RedactionTests_notStarted" outgoing="//@arcs.15" tokensNb="1"/>
+  <nodes xsi:type="petriNet:Place" name="RedactionTests_started" ingoing="//@arcs.16"/>
+  <nodes xsi:type="petriNet:Place" name="RedactionTests_inProgress" outgoing="//@arcs.18" ingoing="//@arcs.17"/>
+  <nodes xsi:type="petriNet:Place" name="RedactionTests_finished" ingoing="//@arcs.19"/>
+  <nodes xsi:type="petriNet:Transition" name="RedactionTests_start" outgoing="//@arcs.16 //@arcs.17" ingoing="//@arcs.15 //@arcs.23 //@arcs.37 //@arcs.39"/>
+  <nodes xsi:type="petriNet:Transition" name="RedactionTests_finish" outgoing="//@arcs.19" ingoing="//@arcs.18 //@arcs.24 //@arcs.38 //@arcs.40"/>
+  <nodes xsi:type="petriNet:Place" name="concepteur" outgoing="//@arcs.25 //@arcs.26" tokensNb="3"/>
+  <nodes xsi:type="petriNet:Place" name="developpeur" outgoing="//@arcs.33 //@arcs.34" tokensNb="2"/>
+  <nodes xsi:type="petriNet:Place" name="machine" outgoing="//@arcs.27 //@arcs.28 //@arcs.29 //@arcs.30 //@arcs.35 //@arcs.36 //@arcs.37 //@arcs.38" tokensNb="4"/>
+  <nodes xsi:type="petriNet:Place" name="redacteur" outgoing="//@arcs.31 //@arcs.32" tokensNb="1"/>
+  <nodes xsi:type="petriNet:Place" name="testeur" outgoing="//@arcs.39 //@arcs.40" tokensNb="2"/>
+  <arcs tokensNb="1" source="//@nodes.0" target="//@nodes.4"/>
+  <arcs tokensNb="1" source="//@nodes.4" target="//@nodes.1"/>
+  <arcs tokensNb="1" source="//@nodes.4" target="//@nodes.2"/>
+  <arcs tokensNb="1" source="//@nodes.2" target="//@nodes.5"/>
+  <arcs tokensNb="1" source="//@nodes.5" target="//@nodes.3"/>
+  <arcs tokensNb="1" source="//@nodes.6" target="//@nodes.10"/>
+  <arcs tokensNb="1" source="//@nodes.10" target="//@nodes.7"/>
+  <arcs tokensNb="1" source="//@nodes.10" target="//@nodes.8"/>
+  <arcs tokensNb="1" source="//@nodes.8" target="//@nodes.11"/>
+  <arcs tokensNb="1" source="//@nodes.11" target="//@nodes.9"/>
+  <arcs tokensNb="1" source="//@nodes.12" target="//@nodes.16"/>
+  <arcs tokensNb="1" source="//@nodes.16" target="//@nodes.13"/>
+  <arcs tokensNb="1" source="//@nodes.16" target="//@nodes.14"/>
+  <arcs tokensNb="1" source="//@nodes.14" target="//@nodes.17"/>
+  <arcs tokensNb="1" source="//@nodes.17" target="//@nodes.15"/>
+  <arcs tokensNb="1" source="//@nodes.18" target="//@nodes.22"/>
+  <arcs tokensNb="1" source="//@nodes.22" target="//@nodes.19"/>
+  <arcs tokensNb="1" source="//@nodes.22" target="//@nodes.20"/>
+  <arcs tokensNb="1" source="//@nodes.20" target="//@nodes.23"/>
+  <arcs tokensNb="1" source="//@nodes.23" target="//@nodes.21"/>
+  <arcs tokensNb="1" kind="readArc" source="//@nodes.1" target="//@nodes.10"/>
+  <arcs tokensNb="1" kind="readArc" source="//@nodes.3" target="//@nodes.11"/>
+  <arcs tokensNb="1" kind="readArc" source="//@nodes.3" target="//@nodes.16"/>
+  <arcs tokensNb="1" kind="readArc" source="//@nodes.1" target="//@nodes.22"/>
+  <arcs tokensNb="1" kind="readArc" source="//@nodes.15" target="//@nodes.23"/>
+  <arcs tokensNb="2" source="//@nodes.24" target="//@nodes.4"/>
+  <arcs tokensNb="2" source="//@nodes.24" target="//@nodes.5"/>
+  <arcs tokensNb="2" source="//@nodes.26" target="//@nodes.4"/>
+  <arcs tokensNb="2" source="//@nodes.26" target="//@nodes.5"/>
+  <arcs tokensNb="1" source="//@nodes.26" target="//@nodes.10"/>
+  <arcs tokensNb="1" source="//@nodes.26" target="//@nodes.11"/>
+  <arcs tokensNb="1" source="//@nodes.27" target="//@nodes.10"/>
+  <arcs tokensNb="1" source="//@nodes.27" target="//@nodes.11"/>
+  <arcs tokensNb="2" source="//@nodes.25" target="//@nodes.16"/>
+  <arcs tokensNb="2" source="//@nodes.25" target="//@nodes.17"/>
+  <arcs tokensNb="3" source="//@nodes.26" target="//@nodes.16"/>
+  <arcs tokensNb="3" source="//@nodes.26" target="//@nodes.17"/>
+  <arcs tokensNb="2" source="//@nodes.26" target="//@nodes.22"/>
+  <arcs tokensNb="2" source="//@nodes.26" target="//@nodes.23"/>
+  <arcs tokensNb="1" source="//@nodes.28" target="//@nodes.22"/>
+  <arcs tokensNb="1" source="//@nodes.28" target="//@nodes.23"/>
+</petriNet:PetriNet>

@@ -1,0 +1,73 @@
+t 1595.0 800.0 RedactionTests_start se 0 w n {} ne
+t 1090.0 215.0 Conception_start ne 0 w n {} ne
+p 970.0 215.0 Conception_inProgress 0 n
+p 710.0 215.0 Conception_finished 0 n
+t 840.0 215.0 Conception_finish n 0 w n {} ne
+p 1335.0 215.0 Conception_started 0 n
+p 1090.0 125.0 Conception_notStarted 1 n
+p 1090.0 50.0 concepteur 3 n
+t 455.0 800.0 RedactionDoc_start s 0 w n {} ne
+p 455.0 710.0 RedactionDoc_notStarted 1 n
+p 365.0 800.0 RedactionDoc_inProgress 0 n
+p 75.0 800.0 RedactionDoc_finished 0 n
+t 220.0 800.0 RedactionDoc_finish n 0 w n {} ne
+p 455.0 920.0 RedactionDoc_started 0 n
+p 305.0 495.0 redacteur 1 n
+t 1090.0 1440.0 Programmation_start n 0 w n {} ne
+p 1235.0 1440.0 Programmation_started 0 n
+p 1090.0 1325.0 Programmation_notStarted 1 n
+t 835.0 1440.0 Programmation_finish s 0 w n {} ne
+p 710.0 1440.0 Programmation_finished 0 n
+p 935.0 1440.0 Programmation_inProgress 0 n
+p 1595.0 715.0 RedactionTests_notStarted 1 n
+p 1595.0 895.0 RedactionTests_started 0 n
+p 1730.0 800.0 RedactionTests_inProgress 0 n
+t 1845.0 800.0 RedactionTests_finish s 0 w n {} ne
+p 1990.0 800.0 RedactionTests_finished 0 n
+p 1090.0 800.0 machine 4 n
+p 1090.0 1580.0 developpeur 2 n
+p 1745.0 515.0 testeur 2 n
+e RedactionTests_finish RedactionTests_finished 1 n
+e Programmation_finished 0.9194266225 230.9718598 RedactionTests_finish 0.7835610258 625.8634036 ?1 n
+e RedactionTests_inProgress RedactionTests_finish 1 n
+e machine 0.8610172585 274.0 RedactionTests_finish 0.5882561222 182.3211452 2 ne
+e testeur 0.9970710986 163.027605 RedactionTests_finish 0.1890597765 77.62087348 1 n
+e RedactionTests_start RedactionTests_started 1 n
+e RedactionTests_start RedactionTests_inProgress 1 n
+e Conception_started 0.007639125485 229.2640399 RedactionTests_start 0.4567549798 208.655218 ?1 n
+e RedactionTests_notStarted RedactionTests_start 1 n
+e machine RedactionTests_start 2 n
+e testeur 0.5030408072 157.0286598 RedactionTests_start 0.164315035 83.86298349 1 n
+e Programmation_finish Programmation_finished 1 n
+e Programmation_inProgress Programmation_finish 1 n
+e developpeur 0.5061977072 154.1168388 Programmation_finish 0.7254989459 58.69412235 2 sw
+e machine 0.5000000005 180.0 Programmation_finish 0.3061289405 153.4438008 3 s
+e Programmation_start Programmation_started 1 n
+e Programmation_start Programmation_inProgress 1 n
+e Conception_finished 0.6570654254 272.082708 Programmation_start 0.4237785335 468.7344664 ?1 n
+e Programmation_notStarted Programmation_start 1 n
+e developpeur 0.1855594708 45.69463864 Programmation_start 0.7253315023 64.77653896 2 ne
+e machine Programmation_start 3 w
+e RedactionDoc_finish RedactionDoc_finished 1 n
+e Conception_finished 0.4562609514 276.3711273 RedactionDoc_finish 0.1067862597 247.6933588 ?1 n
+e RedactionDoc_inProgress RedactionDoc_finish 1 n
+e machine 0.599101134 288.0624932 RedactionDoc_finish 0.7442979626 279.1791533 1 n
+e redacteur 0.4948007084 153.0816775 RedactionDoc_finish 0.3689150726 129.4951737 1 n
+e RedactionDoc_start RedactionDoc_started 1 n
+e RedactionDoc_start RedactionDoc_inProgress 1 n
+e Conception_started 0.5563058468 234.5241193 RedactionDoc_start 0.2002002229 250.1459574 ?1 n
+e RedactionDoc_notStarted RedactionDoc_start 1 n
+e machine RedactionDoc_start 1 n
+e redacteur 0.004598573719 173.0722393 RedactionDoc_start 0.322744752 84.972422 1 n
+e Conception_finish Conception_finished 1 n
+e Conception_inProgress Conception_finish 1 n
+e concepteur 0.4855710309 176.7257763 Conception_finish 0.3064531579 86.37708029 2 s
+e machine 0.4423719992 141.1523999 Conception_finish 0.7088514885 125.1598977 2 w
+e Conception_start Conception_started 1 n
+e Conception_start Conception_inProgress 1 n
+e Conception_notStarted Conception_start 1 n
+e concepteur Conception_start 2 w
+e machine Conception_start 2 nw
+h developpement2Petri_ATL_2TINA
+
+

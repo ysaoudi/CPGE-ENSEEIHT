@@ -1,0 +1,36 @@
+import 'petriNet.ecore'
+
+package petriNet
+
+
+context PetriNet
+inv validName('Invalid name: ' + self.name):
+    self.name.matches('[A-Za-z][A-Za-z0-9]*')
+
+context Node
+def: petrinet(): PetriNet =
+	PetriNet.allInstances()
+		->select(p | p.nodes->includes(self))
+		->asSequence()->first()
+inv isNameUnique: Node.allInstances()->forAll(n1, n2 | n1 <> n2 implies n1.name <> n2.name)
+		
+context Place
+inv isNameDefined: (not self.name.oclIsUndefined()) or self.name <> ''
+inv validName('Invalid name: ' + self.name):
+    self.name.matches('[A-Za-z][A-Za-z0-9]*')
+inv validPlaceTokens : self.tokensNb >= 0
+
+
+--context Transition
+--inv areTimeConstraintsValid : this.min_time <= this.max_time
+
+context Arc
+inv validArcWeight : self.tokensNb >= 1
+inv areArcsCoherent : self.source.oclIsTypeOf(Place) implies self.target.oclIsTypeOf(Transition)
+					and self.target.oclIsTypeOf(Place) implies self.source.oclIsTypeOf(Transition)
+inv validReadArcs : self.kind = ArcKind::readArc implies self.source.oclIsTypeOf(Place) and self.target.oclIsTypeOf(Transition)
+inv sourceAndTargetInSamePetriNet('Source and Target not in the same PetriNet : '
+		+ self.source.name + ' in ' + self.source.petrinet().name + ' and '
+		+ self.target.name + ' in ' + self.target.petrinet().name) :
+			self.source.petrinet()= self.target.petrinet()
+endpackage

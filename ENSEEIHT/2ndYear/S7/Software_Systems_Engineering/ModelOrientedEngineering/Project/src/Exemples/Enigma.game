@@ -1,0 +1,61 @@
+game EnigmaGame is {
+	explorer Hamid {
+			has objects (Attempt)
+			with weight 3
+			is in Enigma
+	} with maxWeight 3
+	
+	contains {
+		place Enigma  is start "Starting Place" {
+			persons (Phoenix)
+			paths (EnigmaToSuccess, EnigmaToFailure)
+		}, 
+		place Success is finish "Success!" {
+			paths (EnigmaToSuccess)
+		},		
+		place Failure is finish "Failure!" {
+		 	paths (EnigmaToFailure)
+		},
+		
+		path EnigmaToSuccess is "PATH TO SUCCESS" {
+			open 0 if hasAnsweredCorrectly
+			from Enigma to Success
+		},
+		path EnigmaToFailure is "PATH TO FAILURE" {
+			open 0 if hasFailedEnigma
+			from Enigma to Failure
+		},
+		
+		object Attempt : 3 is "ATTEMPTS TO ANSWER ENIGMA" {
+			visible 1
+			size 1
+		},
+		knowledge Victory is "VICTORY IS REQUIRED FOR SUCCESS (lol)" {
+			active 1
+		},
+		
+		condition hasFailedEnigma on Hamid {
+			possesses EXACTLY 0 Attempt
+		},
+		condition hasAnsweredCorrectly on Hamid {
+			possesses EXACTLY 1 Victory
+		},
+		condition canAnswer on Hamid{
+			possesses EXACTLY 0 Victory AND possesses MORETHAN 1 Attempt
+		},
+		
+		person Phoenix is "Phoenix's Famous Question" {
+			active 0 if canAnswer
+			in Enigma
+			interactable with AnswerPhoenix
+		},
+		
+		interaction AnswerPhoenix is "Interact with Phoenix" with Phoenix {
+				choose from (choice Answer of AnswerPhoenix is "Answer Enigma"{
+								(action wrongAnswer of Answer  {consumes objects (Attempt)},
+								action rightAnswer of Answer {gives knowledge (Victory)})
+							})
+		}
+	}
+	from Enigma to (Success, Failure)
+}

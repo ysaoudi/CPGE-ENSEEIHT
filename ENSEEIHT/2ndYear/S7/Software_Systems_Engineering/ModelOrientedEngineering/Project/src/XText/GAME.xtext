@@ -1,0 +1,105 @@
+grammar fr.n7.idm.projet.GAME with org.eclipse.xtext.common.Terminals
+
+generate game "http://www.n7.fr/idm/projet/GAME"
+
+Game:
+	'game' name=ID 'is' '{'
+		explorer = Explorer 'with' 'maxWeight' maxWeight = INT
+		('contains' '{' gameElements += GameElement ( "," gameElements += GameElement)* '}' )?
+		'from' startingPlace = [Place] 'to' '(' finishingPlaces += [Place] ( "," finishingPlaces += [Place])*')'
+	 '}'	
+;
+
+Explorer : 
+	'explorer' name = ID '{' 
+		('has' 'objects' '(' objects+=[Object] ( "," objects+=[Object])* ')' )?
+		('has' 'knowledge' '(' knowledge+=[Knowledge] ( "," knowledge+=[Knowledge])* ')' )? 
+		'with' 'weight' currentWeight = INT
+		'is' 'in' currentPlace = [Place]
+	'}' ;
+	
+	
+GameElement returns GameElement: Person | Object | Knowledge | Place | Path | Interaction | Action | Choice | Explorer| Condition ;
+
+Person:
+	'person' name=ID 'is' description=STRING '{'
+	'active' isActive = INT ('if' activityCondition = [Condition])?
+	'in' place = [Place]
+	'interactable' 'with' interaction = [Interaction]
+	'}'
+;
+
+
+Description : text = STRING ('depends' 'on' condition = [Condition])?;
+
+Object:'object' name=ID (':' quantity = INT)? 'is' description = Description '{'
+		'visible' isVisible = INT ('if' visibilityCondition = [Condition])?
+		'size' size = INT
+		('droppable' 'if' dropCondition = [Condition])? 
+	'}';
+
+
+Knowledge:
+	'knowledge' name=ID 'is' description = Description '{'
+		'active' isActive = INT ('if' activityCondition = [Condition])?
+	'}'
+;
+
+Place:'place' name=ID 'is' placeType = PlaceType description = Description '{'
+		('knowledge' '(' knowledge+=[Knowledge] ( "," knowledge+=[Knowledge])* ')' )?
+		('objects' '(' objects+=[Object] ( "," objects+=[Object])* ')' )?
+		('persons' '(' persons+=[Person] ( "," persons+=[Person])* ')' )?
+		('paths' '(' paths += [Path] ( "," paths +=[Path])*')')		
+	'}'
+;
+
+enum PlaceType : START = 'start' | FINISH = 'finish' | NORMAL = 'normal';
+
+Path:'path' name=ID 'is' description = Description '{'
+		'open' isOpen = INT ('if' openCondition = [Condition])?
+		'from' Place1 = [Place] 'to' Place2 = [Place]
+		('transmits' '(' transmittedElements += [GameElement] ("," transmittedElements+=[GameElement])* ')' 'if' transmissionCondition = [Condition])?
+		('consumes' '(' consumedElements += [GameElement] ("," consumedElements+=[GameElement])* ')' 'if' consumptionCondition = [Condition])?
+	'}'
+;
+
+
+// condition on Hamid {
+// 		possesses moreThan 5 Attempt
+//	}
+
+// condition on Hamid {
+// 		possesses moreThan 5 Attempt or possesses lessThan 1 Victory and possesses exactly 5 Attempt
+//	}
+
+
+Condition : 'condition' name=ID 'on' explorer = [Explorer] '{'
+		firstCondition = SubConditions (nextConditions += NextCondition)*
+	'}'
+;
+
+SubConditions :'possesses' comparator = Comparator compared = INT gameElement = [GameElement];
+
+NextCondition : logicalOperator = LogicalOperator subCondition = SubConditions;
+
+enum Comparator : EXACTLY = 'EXACTLY' | STRICTLYMORETHAN = 'STRICTLYMORETHAN' | STRICTLYLESSTHAN = 'STRICTLYLESSTHAN' | MORETHAN = 'MORETHAN' | LESSTHAN = 'LESSTHAN';
+
+enum LogicalOperator : OR = 'OR' | AND = 'AND';
+
+Action : {Action} 'action' name = ID 'of' choice = [Choice] ('{'
+		('gives' 'objects' '(' objectsToGive+=[Object] ( "," objectsToGive+=[Object])* ')' ('if' objectTransmissionCondition = [Condition] )?)?
+		('gives' 'knowledge' '(' knowledge+=[Knowledge] ( "," knowledge+=[Knowledge])* ')'  ('if' knowledgeTransmissionCondition = [Condition])?)? 
+		('consumes' 'objects' '(' objectsToConsume+=[Object] ( "," objectsToConsume+=[Object])* ')' ('if' objectConsumptionCondition = [Condition])?)?
+	'}')?;
+
+Choice : 'choice' name = ID 'of' interaction = [Interaction] 'is' description = STRING '{'
+	('(' actions+=Action ( "," actions+=Action)* ')' )?
+	('depends' 'on' '(' previousActions+=[Action] ( "," previousActions+=[Action])* ')' 'and' condition = [Condition])?
+	'}'
+;
+
+Interaction : 'interaction' name = ID 'is' description = STRING 'with' person = [Person] '{' 
+	('starts' 'if' startCondition = [Condition])?
+	'choose' 'from' '(' choices+=Choice ( "," choices+=Choice)* ')'
+	('ends' 'if' endCondition = [Condition])?
+	'}';

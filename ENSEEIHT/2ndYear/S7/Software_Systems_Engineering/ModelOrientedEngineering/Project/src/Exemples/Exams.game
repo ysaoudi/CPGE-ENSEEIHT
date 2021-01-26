@@ -1,0 +1,118 @@
+game Exams is {
+	explorer Khalid {
+		has objects(FirstSessionAttempt, YearAttempt)
+		with weight 2
+		is in FirstSession
+	} with maxWeight 3
+	
+	contains {
+		person FirstSessionExam is "Answer Exam!" {
+			active 0 if canAttendFirstSession
+			in FirstSession
+			interactable with TakeFirstSession
+		},
+		interaction TakeFirstSession is "Take the First Session Exams!" with FirstSessionExam {
+			choose from (choice FirstSessionAnswer of TakeFirstSession is "Answer Exam" {
+				(action failFirstSessionExam of FirstSessionAnswer{gives objects (SecondSessionAttempt) consumes objects (FirstSessionAttempt)}, action passFirstSessionExam of FirstSessionAnswer {gives knowledge (PassedExams)})
+			})
+		},
+		person SecondSessionExam is "Answer Exam!" {
+			active 0 if canAttendSecondSession
+			in SecondSession
+			interactable with TakeSecondSession
+		},
+		interaction TakeSecondSession is "Take the Second Session Exams!" with SecondSessionExam {
+			choose from (choice SecondSessionAnswer of TakeSecondSession is "Answer Exam" {
+				(action failSecondSessionExam of SecondSessionAnswer{ consumes objects (SecondSessionAttempt)}, action passSecondSessionExam of SecondSessionAnswer {gives knowledge (PassedExams)})
+			})
+		},
+		person Director is "Beg to retake year" {
+			active 0 if canRetakeYear
+			in RetakeYear
+			interactable with BegToRetakeYear
+		},
+		interaction BegToRetakeYear is "Beg me!" with Director {
+			choose from (choice BegDirector of BegToRetakeYear is "BEEEG" {
+				(action Beg of BegDirector{gives objects (FirstSessionAttempt) consumes objects (YearAttempt)})
+			})
+		},
+		place FirstSession is start "Exams Room!" {
+			persons (FirstSessionExam)
+			paths (FirstSessionToSuccess, FirstSessionToSecondSession, RetakeYearToFirstSession)
+		},
+		place SecondSession is normal "Second Sessions Exams!"{
+			persons (SecondSessionExam)
+			paths (SecondSessionToSuccess, SecondSessionToFailure, FirstSessionToSecondSession, SecondSessionToRetakeYear)
+		},
+		place Success is finish "Successfully Passed Exams" {
+			paths (FirstSessionToSuccess, SecondSessionToSuccess)
+		},
+		place Failure is finish "Failed Exams" {
+			paths (SecondSessionToFailure)
+		},
+		place RetakeYear is normal "Retake Year" {
+			persons (Director)
+			paths (SecondSessionToRetakeYear, RetakeYearToFirstSession)
+		},
+		
+		path FirstSessionToSuccess is "PATH TO SUCCESS" {
+			open 0 if hasPassedExam
+			from FirstSession to Success
+		},
+		path FirstSessionToSecondSession is "ANOTHER PATH TO SUCCESS" {
+			open 0 if canAttendSecondSession
+			from FirstSession to SecondSession
+		},
+		
+		path SecondSessionToSuccess is "PATH TO SUCCESS" {
+			open 0 if hasPassedExam
+			from SecondSession to Success
+		},
+		path SecondSessionToRetakeYear is "Another Year Another Me!" {
+			open 0 if canRetakeYear
+			from SecondSession to RetakeYear
+		},
+		path SecondSessionToFailure is "PATH TO FAILURE" {
+			open 0 if hasFailedExams
+			from SecondSession to Failure
+		},
+		path RetakeYearToFirstSession is "PATH TO SUCCESS 2.0" {
+			open 0 if canAttendFirstSession
+			from RetakeYear to FirstSession
+		},
+		
+		object FirstSessionAttempt:1 is "Attempts at First Session" {
+			visible 0
+			size 1
+		}, 
+		object SecondSessionAttempt:1 is "Attempts at First Session" {
+			visible 0
+			size 1
+		},
+		
+		knowledge PassedExams is "Finally passed exams!" {
+			active 0
+		},
+		object YearAttempt:1 is "Finally can go home" {
+			visible 0
+			size 1
+		},
+		
+		condition hasPassedExam on Khalid {
+			possesses MORETHAN 1 PassedExams
+		},
+		condition canAttendFirstSession on Khalid {
+			possesses MORETHAN 1 FirstSessionAttempt
+		},
+		condition canAttendSecondSession on Khalid {
+			possesses MORETHAN 1 SecondSessionAttempt
+		},
+		condition hasFailedExams on Khalid {
+			possesses EXACTLY 0 SecondSessionAttempt AND possesses EXACTLY 0 FirstSessionAttempt AND possesses EXACTLY 0 YearAttempt
+		},
+		condition canRetakeYear on Khalid {
+			possesses EXACTLY 0 SecondSessionAttempt AND possesses EXACTLY 0 FirstSessionAttempt AND possesses EXACTLY 1 YearAttempt
+		}
+	}
+	from FirstSession to (Success, Failure)
+}

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="ASCII"?>
+<game:Game xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:game="http://www.n7.fr/idm/projet/GAME"
+    name="Exams"
+    maxWeight="3"
+    startingPlace="//@gameElements.6"
+    finishingPlaces="//@gameElements.8 //@gameElements.9">
+  <explorer
+      name="Khalid"
+      objects="//@gameElements.17 //@gameElements.20"
+      currentWeight="2"
+      currentPlace="//@gameElements.6"/>
+  <gameElements
+      xsi:type="game:Person"
+      name="FirstSessionExam"
+      description="Answer Exam!"
+      activityCondition="//@gameElements.22"
+      place="//@gameElements.6"
+      interaction="//@gameElements.1"/>
+  <gameElements
+      xsi:type="game:Interaction"
+      name="TakeFirstSession"
+      description="Take the First Session Exams!"
+      person="//@gameElements.0">
+    <choices
+        name="FirstSessionAnswer"
+        interaction="//@gameElements.1"
+        description="Answer Exam">
+      <actions
+          name="failFirstSessionExam"
+          choice="//@gameElements.1/@choices.0"
+          objectsToGive="//@gameElements.18"
+          objectsToConsume="//@gameElements.17"/>
+      <actions
+          name="passFirstSessionExam"
+          choice="//@gameElements.1/@choices.0"
+          knowledge="//@gameElements.19"/>
+    </choices>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Person"
+      name="SecondSessionExam"
+      description="Answer Exam!"
+      activityCondition="//@gameElements.23"
+      place="//@gameElements.7"
+      interaction="//@gameElements.3"/>
+  <gameElements
+      xsi:type="game:Interaction"
+      name="TakeSecondSession"
+      description="Take the Second Session Exams!"
+      person="//@gameElements.2">
+    <choices
+        name="SecondSessionAnswer"
+        interaction="//@gameElements.3"
+        description="Answer Exam">
+      <actions
+          name="failSecondSessionExam"
+          choice="//@gameElements.3/@choices.0"
+          objectsToConsume="//@gameElements.18"/>
+      <actions
+          name="passSecondSessionExam"
+          choice="//@gameElements.3/@choices.0"
+          knowledge="//@gameElements.19"/>
+    </choices>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Person"
+      name="Director"
+      description="Beg to retake year"
+      activityCondition="//@gameElements.25"
+      place="//@gameElements.10"
+      interaction="//@gameElements.5"/>
+  <gameElements
+      xsi:type="game:Interaction"
+      name="BegToRetakeYear"
+      description="Beg me!"
+      person="//@gameElements.4">
+    <choices
+        name="BegDirector"
+        interaction="//@gameElements.5"
+        description="BEEEG">
+      <actions
+          name="Beg"
+          choice="//@gameElements.5/@choices.0"
+          objectsToGive="//@gameElements.17"
+          objectsToConsume="//@gameElements.20"/>
+    </choices>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Place"
+      name="FirstSession"
+      persons="//@gameElements.0"
+      paths="//@gameElements.11 //@gameElements.12 //@gameElements.16">
+    <description
+        text="Exams Room!"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Place"
+      name="SecondSession"
+      placeType="normal"
+      persons="//@gameElements.2"
+      paths="//@gameElements.13 //@gameElements.15 //@gameElements.12 //@gameElements.14">
+    <description
+        text="Second Sessions Exams!"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Place"
+      name="Success"
+      placeType="finish"
+      paths="//@gameElements.11 //@gameElements.13">
+    <description
+        text="Successfully Passed Exams"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Place"
+      name="Failure"
+      placeType="finish"
+      paths="//@gameElements.15">
+    <description
+        text="Failed Exams"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Place"
+      name="RetakeYear"
+      placeType="normal"
+      persons="//@gameElements.4"
+      paths="//@gameElements.14 //@gameElements.16">
+    <description
+        text="Retake Year"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Path"
+      name="FirstSessionToSuccess"
+      openCondition="//@gameElements.21"
+      Place1="//@gameElements.6"
+      Place2="//@gameElements.8">
+    <description
+        text="PATH TO SUCCESS"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Path"
+      name="FirstSessionToSecondSession"
+      openCondition="//@gameElements.23"
+      Place1="//@gameElements.6"
+      Place2="//@gameElements.7">
+    <description
+        text="ANOTHER PATH TO SUCCESS"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Path"
+      name="SecondSessionToSuccess"
+      openCondition="//@gameElements.21"
+      Place1="//@gameElements.7"
+      Place2="//@gameElements.8">
+    <description
+        text="PATH TO SUCCESS"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Path"
+      name="SecondSessionToRetakeYear"
+      openCondition="//@gameElements.25"
+      Place1="//@gameElements.7"
+      Place2="//@gameElements.10">
+    <description
+        text="Another Year Another Me!"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Path"
+      name="SecondSessionToFailure"
+      openCondition="//@gameElements.24"
+      Place1="//@gameElements.7"
+      Place2="//@gameElements.9">
+    <description
+        text="PATH TO FAILURE"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Path"
+      name="RetakeYearToFirstSession"
+      openCondition="//@gameElements.22"
+      Place1="//@gameElements.10"
+      Place2="//@gameElements.6">
+    <description
+        text="PATH TO SUCCESS 2.0"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Object"
+      name="FirstSessionAttempt"
+      quantity="1"
+      size="1">
+    <description
+        text="Attempts at First Session"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Object"
+      name="SecondSessionAttempt"
+      quantity="1"
+      size="1">
+    <description
+        text="Attempts at First Session"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Knowledge"
+      name="PassedExams">
+    <description
+        text="Finally passed exams!"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Object"
+      name="YearAttempt"
+      quantity="1"
+      size="1">
+    <description
+        text="Finally can go home"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Condition"
+      name="hasPassedExam"
+      explorer="//@explorer">
+    <firstCondition
+        comparator="MORETHAN"
+        compared="1"
+        gameElement="//@gameElements.19"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Condition"
+      name="canAttendFirstSession"
+      explorer="//@explorer">
+    <firstCondition
+        comparator="MORETHAN"
+        compared="1"
+        gameElement="//@gameElements.17"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Condition"
+      name="canAttendSecondSession"
+      explorer="//@explorer">
+    <firstCondition
+        comparator="MORETHAN"
+        compared="1"
+        gameElement="//@gameElements.18"/>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Condition"
+      name="hasFailedExams"
+      explorer="//@explorer">
+    <firstCondition
+        gameElement="//@gameElements.18"/>
+    <nextConditions
+        logicalOperator="AND">
+      <subCondition
+          gameElement="//@gameElements.17"/>
+    </nextConditions>
+    <nextConditions
+        logicalOperator="AND">
+      <subCondition
+          gameElement="//@gameElements.20"/>
+    </nextConditions>
+  </gameElements>
+  <gameElements
+      xsi:type="game:Condition"
+      name="canRetakeYear"
+      explorer="//@explorer">
+    <firstCondition
+        gameElement="//@gameElements.18"/>
+    <nextConditions
+        logicalOperator="AND">
+      <subCondition
+          gameElement="//@gameElements.17"/>
+    </nextConditions>
+    <nextConditions
+        logicalOperator="AND">
+      <subCondition
+          compared="1"
+          gameElement="//@gameElements.20"/>
+    </nextConditions>
+  </gameElements>
+</game:Game>

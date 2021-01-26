@@ -1,0 +1,67 @@
+#!/bin/bash
+ip link set dev eth0 up
+ip a a 1.2.3.19/28 dev eth0
+
+#ROUTAGE STATIQUE
+#ip route add 192.168.111.128/25 via 1.2.3.17
+#ip route add 1.2.3.128/25 via 1.2.3.17
+#ip route add 1.2.3.64/26 via 1.2.3.17
+#ip route add 1.2.3.32/27 via 1.2.3.17
+
+ip route add default via 1.2.3.17
+service bind9 start
+
+LOCALCONF="
+zone \"younes.com\" {
+        type master;
+        file \"/etc/bind/for.younes.com\";
+        allow-transfer { 1.2.3.19; };
+        also-notify { 1.2.3.19; };
+ };
+zone \"3.2.1.in-addr.arpa\" {
+        type master;
+        file \"/etc/bind/rev.younes.com\";
+        allow-transfer { 1.2.3.19; };
+        also-notify { 1.2.3.19; };
+ };"
+echo -e "$LOCALCONF" >> "/etc/bind/named.conf.local"
+
+FORWARDZONE="
+;
+; BIND data file for younes.com
+;
+\$TTL    604800
+@       IN      SOA     www.younes.com. root.younes.com. (
+                              2         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      www.younes.com.
+@       IN      A       1.2.3.19
+www     IN      A       1.2.3.19
+www         	A       1.2.3.20
+"
+echo -e "$FORWARDZONE" >> "/etc/bind/for.younes.com"
+
+REVERSEZONE="
+;
+; BIND reverse data file for 1.2.3.19
+;
+\$TTL    604800
+@       IN      SOA     www.younes.com. root.younes.com. (
+                              2        ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      www.younes.com.
+@       IN      PTR     younes.com.
+www     IN	A	1.2.3.19
+19      IN      PTR     www.younes.com.
+"
+echo -e "$REVERSEZONE" >> "/etc/bind/rev.younes.com"
+
+service bind9 restart
