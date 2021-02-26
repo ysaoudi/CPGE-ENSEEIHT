@@ -3,4 +3,9 @@ ENSEEIHT/2ndYear/Mobilite Etranger 2021-2022/*
 ENSEEIHT/2ndYear/Soft Human Skills/*
 ENSEEIHT/2ndYear/RepoProjects/*
 ENSEEIHT/2ndYear/S7/*
-ENSEEIHT/2ndYear/S8/*
+ENSEEIHT/2ndYear/S8/WebDev/weather-app/web-server/node_modules/
+ENSEEIHT/2ndYear/S8/WebDev/weather-app/console-app/node_modules/
+ENSEEIHT/2ndYear/S8/WebDev/notes-app/node_modules/
+
+*.mp4
+*.flv
