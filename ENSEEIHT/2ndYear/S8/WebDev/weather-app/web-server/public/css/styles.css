@@ -1,0 +1,150 @@
+body {
+    font-family: arial;
+    font-size: 18px;
+    background-color: #223;
+    color: #eee;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex-grow: 1;
+}
+
+footer {
+    text-align: end;
+    color : rgb(65, 28, 153);
+    border-top: 1px solid #888888; 
+    margin-top: 16px;
+    padding: 16px 0;
+    font-size: medium;
+}
+
+header {
+    margin-top: 16px;
+    margin-bottom:  48px;
+    text-align: center;
+}
+
+article {
+    margin-left: auto;
+    margin-right: auto;
+    overflow: hidden;
+    /*margin-top: 10px;*/
+    background-color: #446;
+    /*border: 4px solid rgb(43, 152, 220);*/
+    max-width: 600px;
+    margin-top: 25px;
+    border-radius: 10px;
+}
+
+h1 {
+    text-align: center;
+    margin: 0;
+    padding: 15px;
+    /*color: blueviolet;*/
+    color: #eee;
+    font-size: 64px;
+    margin-bottom: 16px;
+    /*border-radius: 10px;*/
+}
+
+.portrait {
+ width: 25% ;
+ margin-left: auto;
+ margin-right: auto;
+ 
+ display: block;
+}
+
+img {
+    box-shadow: 5px 5px 5px black;   
+}
+
+video {
+    width: 90%;
+    box-shadow: 5px 5px 5px black;
+}
+
+h2 {
+
+    margin-left: 5px;
+}
+
+header a, footer a{
+    color: #eee;
+    text-decoration: none;
+    margin: auto 16px;
+}
+
+header a:visited, footer a:visited {
+    font-style: italic;
+    color: blueviolet;
+}
+
+header a:focus, footer a:focus{
+    color: #446;
+    background-color: #eee;
+}
+
+.gotop{
+    text-indent: 90%;
+}
+
+h3 {
+    font-size: xx-large;
+}
+
+.customArticle {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#latintext {
+    text-align: justify;
+    margin-left: 15px;
+    margin-right: 5px;
+}
+
+input {
+    border: 1px solid #cccccc;
+    padding : 6px
+}
+
+form {
+    padding-top: 1px;
+    padding-bottom: 20px;
+}
+
+button {
+    cursor: pointer;
+    padding: 6px;
+    border: 1px solid blueviolet;
+    background: blueviolet;
+    color:#eee;
+}
+button:focus {
+    color: #eee;
+    background-color: rgb(65, 28, 153);;
+    border: 1px solid rgb(65, 28, 153);;
+}
+
+.description{
+    text-indent: 30px;
+}
+
+.self-promotion{
+    font-size: medium;
+}
+
+.center-text{
+    text-align: center;
+}
+
+.small-par{
+    font-size: medium;
+    padding-left: 155px;
+}
