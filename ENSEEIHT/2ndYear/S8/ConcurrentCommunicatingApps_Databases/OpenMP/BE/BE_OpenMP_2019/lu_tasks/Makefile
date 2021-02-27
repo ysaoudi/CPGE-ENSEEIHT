@@ -7,7 +7,7 @@ CFLAGS	 = -O3 -fopenmp -Wunknown-pragmas
 LDFLAGS  = $(FCFLAGS) 
 LBLAS    = /mnt/n7fs/ens/tp_abuttari/acml-4.4.0/gfortran64/lib/libacml.a -lm
 
-OBJS = aux.o auxf.o lu_seq.o lu_par_tasks.o kernels.o main.o trace.o
+OBJS = utils.o utilsf.o lu_seq.o lu_par_tasks.o kernels.o main.o trace.o
 
 main: clean $(OBJS)
 	$(LINK) $(LDFLAGS) -o $@ $(OBJS) $(LBLAS) 

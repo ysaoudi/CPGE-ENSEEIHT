@@ -6,7 +6,7 @@ CFLAGS   = -g -fopenmp -Wunknown-pragmas
 LDFLAGS  = $(CFLAGS) 
 LIBS     = -lm
 
-OBJS =   aux.o longest_branch_seq.o longest_branch_par.o main.o
+OBJS =   utils.o longest_branch_seq.o longest_branch_par.o main.o
 
 main: $(OBJS)
 	$(LINK) -o $@  $(LDFLAGS) $(OBJS) $(LIBS)

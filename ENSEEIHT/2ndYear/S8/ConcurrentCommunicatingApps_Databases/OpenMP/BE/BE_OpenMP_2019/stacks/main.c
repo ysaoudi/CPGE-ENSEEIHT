@@ -1,4 +1,4 @@
-#include "aux.h"
+#include "utils.h"
 #include <omp.h>
 
 void stacks_seq(stack_t *stacks, int n);

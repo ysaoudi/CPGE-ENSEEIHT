@@ -6,7 +6,7 @@ CFLAGS   = -g -fopenmp
 LDFLAGS  = $(CFLAGS) 
 LIBS     = -lm $(LBLAS)
 
-OBJS =   aux.o main.o
+OBJS =   utils.o main.o
 
 main: $(OBJS)
 	$(LINK) -o $@  $(LDFLAGS) $(OBJS) $(LIBS)

@@ -4,7 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include "omp.h"
-#include "aux.h"
+#include "utils.h"
 
 void pipeline(data *datas, resource *resources, int ndatas, int nsteps);
 

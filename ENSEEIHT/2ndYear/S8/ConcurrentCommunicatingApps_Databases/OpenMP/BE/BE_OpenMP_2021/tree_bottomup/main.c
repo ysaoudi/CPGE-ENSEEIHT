@@ -1,4 +1,4 @@
-#include "aux.h"
+#include "utils.h"
 #define VALUE_OF_VISITED_NODE (-18111999)
 
 void bottom_up(int nleaves, struct node **leaves, int nnodes);

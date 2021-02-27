@@ -1,4 +1,4 @@
-#include "aux.h"
+#include "utils.h"
 
 void butterfly_seq(int n, int l, int *array);
 void butterfly_par(int n, int l, int *array);

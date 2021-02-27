@@ -1,4 +1,4 @@
-#include "aux.h"
+#include "utils.h"
 
 void longest_branch_seq(node_t *root, unsigned int *longest_branch_weight, unsigned int *longest_branch_leaf){
 

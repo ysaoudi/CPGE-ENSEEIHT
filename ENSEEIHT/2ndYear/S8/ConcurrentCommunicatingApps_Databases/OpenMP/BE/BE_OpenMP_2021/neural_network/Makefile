@@ -7,7 +7,7 @@ LDFLAGS  = $(CFLAGS)
 LBLAS    = /mnt/n7fs/ens/tp_abuttari/acml-4.4.0/gfortran64/lib/libacml.a -lm
 LIBS     = -lm $(LBLAS) -lm -lgfortran
 
-OBJS =   aux.o main.o
+OBJS =   utils.o main.o
 
 main: $(OBJS)
 	$(LINK) -o $@  $(LDFLAGS) $(OBJS) $(LIBS)

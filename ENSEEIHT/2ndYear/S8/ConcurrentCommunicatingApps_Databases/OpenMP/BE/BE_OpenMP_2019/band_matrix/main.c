@@ -4,7 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include "omp.h"
-#include "aux.h"
+#include "utils.h"
 
 int main(int argc, char **argv){
   int   n, b, i;

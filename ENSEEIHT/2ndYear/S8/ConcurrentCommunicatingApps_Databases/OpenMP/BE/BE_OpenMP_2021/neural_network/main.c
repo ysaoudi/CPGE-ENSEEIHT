@@ -4,7 +4,7 @@
 #include <string.h>
 #include <math.h>
 #include "omp.h"
-#include "aux.h"
+#include "utils.h"
 
 void sequential_nn(layer *Layers, data *D, int n, int m, int L);
 void parallel_nn_loops(layer *Layers, data *D, int n, int m, int L);
