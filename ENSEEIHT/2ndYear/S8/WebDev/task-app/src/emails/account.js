@@ -12,7 +12,6 @@ const sendWelcomeEmail = (email, name) => {
         text: `Welcome to the app, ${name}. Let me know how you get along with the app.`
     };
     mg.messages().send(data, function (error, body) {
-	    console.log(body);
     })
 }
 
@@ -24,7 +23,6 @@ const sendCancelationEmail = (email, name) => {
         text: `Goodbye, ${name}. I hope to see you back sometime soon.`
     };
     mg.messages().send(data, function (error, body) {
-        console.log(body);
     })
 }
 
