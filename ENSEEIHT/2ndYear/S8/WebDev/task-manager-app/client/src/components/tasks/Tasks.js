@@ -38,13 +38,13 @@ const Tasks = ({getTasks, task: {tasks, loading}}) => {
                 <TaskForm/>
                 <div className="sortbar form-group my-txt-right">
                         <form>
-                            <small className="text-white" for="page">Page: </small>
-                            <input className="form-group my-txt-left" type="number" id="page" placeholder="1" name="page" min="1" max="100" value={page} onChange={onChange}/>
+                            <small className="text-white hide-sm" for="page">Page: </small>
+                            <input className="form-group my-txt-left my-7" type="number" id="page" placeholder="1" name="page" min="1" max="100" value={page} onChange={onChange}/>
                         </form>
                         
                         <form>
-                        <small className="text-white" for="limit">Limit per page: </small>
-                            <select className="form-group my-txt-left" name="limit" value={limit} onChange={onChange}>
+                        <small className="text-white hide-sm" for="limit">Limit per page: </small>
+                            <select className="form-group my-txt-left my-6" name="limit" value={limit} onChange={onChange}>
                                 <option value="" disabled>Limit per page</option>
                                 <option value="5">5</option>
                                 <option value="10">10</option>
@@ -54,24 +54,24 @@ const Tasks = ({getTasks, task: {tasks, loading}}) => {
                             </select>
                         </form>
                         <form>
-                            <small className="text-white" for="completed">Filter: </small>
-                            <select name="completed" value={completed} onChange={onChange}>
+                            <small className="text-white hide-sm" for="completed">Filter: </small>
+                            <select className="my-6" name="completed" value={completed} onChange={onChange}>
                                 <option value="" selected> No filters selected</option>
                                 <option value="false">Not Completed</option>
                                 <option value="true">Completed</option>
                             </select>
                         </form>
                         <form>
-                            <small className="text-white" for="sort">Sorting: </small>
-                            <select name="sort" value={sort} onChange={onChange}>
+                            <small className="text-white hide-sm" for="sort">Sorting: </small>
+                            <select className="my-6" name="sort" value={sort} onChange={onChange}>
                                 <option value="" selected> No sorting selected</option>
                                 <option value="createdAt">Creation Date</option>
                                 <option value="description">Description</option>
                             </select>
                         </form>
                         <form>
-                            <small className="text-white" for="order">Order: </small>
-                            <select name="order" value={order} onChange={onChange}>
+                            <small className="text-white hide-sm" for="order">Order: </small>
+                            <select className="my-6" name="order" value={order} onChange={onChange}>
                                 <option value="" disabled>Sorting order</option>
                                 <option value="asc">Asc</option>
                                 <option value="desc">Desc</option>

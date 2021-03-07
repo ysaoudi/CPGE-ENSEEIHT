@@ -146,13 +146,16 @@ img {
 
 .my-5 {
   outline: none;
-  resize: none;
   overflow: auto;
   border: 0 none white;
   font-family: 'Raleway', sans-serif;
   font-weight: bold;
   font-size: 0.9rem;
   margin-left: 7%;
+}
+
+.my-6{
+  width: 30%;
 }
 
 .btn {

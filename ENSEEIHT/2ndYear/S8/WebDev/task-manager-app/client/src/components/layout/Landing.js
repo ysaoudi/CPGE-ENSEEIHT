@@ -28,7 +28,7 @@ const Landing = ({isAuthenticated}) => {
                     <a href="https://linkedin.com/in/ysaoudi"> LinkedIn - </a>
                     <a href="https://github.com/ysaoudi"> Github  </a>
                 </h2>
-                <p>Created by Younes Saoudi</p>
+                <p>Created by Younes Saoudi </p>
             </footer>
         </section>
     )

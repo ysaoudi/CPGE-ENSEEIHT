@@ -2,10 +2,10 @@ import React, {Fragment, useState, useEffect} from 'react'
 import {Link, withRouter} from "react-router-dom"
 import PropTypes from 'prop-types'
 import {connect} from "react-redux"
-import {updateProfile, getCurrentProfile} from '../../actions/profile'
+import {updateProfile, getCurrentProfile, updateProfilePicture} from '../../actions/profile'
 // import axios from "axios"
 
-const UpdateProfile = ({profile:{profile, loading}, updateProfile, getCurrentProfile, history}) => {
+const UpdateProfile = ({profile:{profile, loading}, updateProfile, getCurrentProfile, updateProfilePicture, history}) => {
     let blankPicture = "https://www.gravatar.com/avatar/d415f0e30c471dfdd9bc4f827329ef48?s=200&r=pg&d=mm"
     const [formData, setFormData] = useState({
         name:"",
@@ -39,7 +39,6 @@ const UpdateProfile = ({profile:{profile, loading}, updateProfile, getCurrentPro
 
     const onSubmit = async e => {
         e.preventDefault()
-        delete formData.avatarURL
         if(!password)
             delete formData.password
         if(!age)
@@ -47,7 +46,9 @@ const UpdateProfile = ({profile:{profile, loading}, updateProfile, getCurrentPro
         if(!avatar)
             delete formData.avatar
 
-        updateProfile(formData, history)
+        await updateProfilePicture(formData)
+        await updateProfile(formData, history)
+        console.log("formData again", formData.avatar)
     }
     
     const handleChange = (event) => {
@@ -107,6 +108,7 @@ const UpdateProfile = ({profile:{profile, loading}, updateProfile, getCurrentPro
 UpdateProfile.propTypes = {
     updateProfile: PropTypes.func.isRequired,
     getCurrentProfile: PropTypes.func.isRequired,
+    updateProfilePicture: PropTypes.func.isRequired,
     profile: PropTypes.object.isRequired
 }
 
@@ -114,4 +116,4 @@ const mapStatesToProps = state => ({
     profile: state.profile
 })
 
-export default connect(mapStatesToProps, {updateProfile, getCurrentProfile})(withRouter(UpdateProfile))
+export default connect(mapStatesToProps, {updateProfile, getCurrentProfile, updateProfilePicture})(withRouter(UpdateProfile))

@@ -37,6 +37,24 @@ export const getCurrentProfile = () => async dispatch => {
     }
 }
 
+export const updateProfilePicture = (formData) => async dispatch => {
+    let data = new FormData();
+    data.append('avatar', formData.avatar, formData.avatar.fileName);
+
+    axios.post("users/me/avatar", data, {
+        headers: {
+            'accept': 'application/json',
+            'Accept-Language': 'en-US,en;q=0.8',
+            'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+        }
+    })
+    .then((response) => {
+        dispatch(setAlert("Image Uploaded", "success"))
+    }).catch((error) => {
+        console.log(error)
+    });
+}
+
 // Update profile
 export const updateProfile = (formData, history) => async dispatch => {
     try {
@@ -47,14 +65,16 @@ export const updateProfile = (formData, history) => async dispatch => {
         //     // // console.log("avatar", avatarBuffer)
         //     // await axios.post("users/me/avatar", formData, {headers:{'content-type': 'multipart/form-data'}})
         // }
-        
-        delete formData.avatar
+        var clone = Object.assign({}, formData);
+        delete clone.avatar;
+        delete clone.avatarURL
+        //delete formData.avatar
         let config = {
             headers: {
                 "Content-Type" : "application/json"
             }
         }
-        const res = await axios.patch("/users/me", formData, config)
+        const res = await axios.patch("/users/me", clone, config)
 
         dispatch({
             type: GET_PROFILE,

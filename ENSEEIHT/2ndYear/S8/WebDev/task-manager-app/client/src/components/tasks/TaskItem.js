@@ -36,7 +36,7 @@ const TaskItem = ({ deleteTask, editTask, auth, task: { _id, description, comple
         <div className="post bg-white p-1 my-1">
             <div>
                 <button className="btn btn-primary">
-                    Done <input 
+                    <span className="hide-sm">Done</span> <input 
                             type="checkbox" 
                             id="completed2" 
                             name="completed" 
